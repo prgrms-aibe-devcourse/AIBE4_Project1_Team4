@@ -1,0 +1,19 @@
+{
+  "name": "teamproject",
+  "version": "1.0.0",
+  "description": "Team4 project1",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.24.0",
+    "@supabase/supabase-js": "^2.75.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
