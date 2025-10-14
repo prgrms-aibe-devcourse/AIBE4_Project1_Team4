@@ -93,7 +93,7 @@ body {
     left: 0;
     right: 0;
     height: 100%;
-    background-image: url(docs/img/index-main.png);
+    background-image: url(../img/index-main.png);
 }
 
 /* 챗봇 컨테이너 - 히어로 섹션 위에 배치 */
