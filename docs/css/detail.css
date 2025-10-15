@@ -1,0 +1,74 @@
+:root {
+  --color-red: #bb2637; /* 버튼, 포인트 컬러 */
+  --color-dark-red: #a91d2b; /* 마우스 호버 및 애니메이션 */
+  --color-black: #000000;
+  --color-white: #ffffff;
+}
+
+/* 기본 레이아웃 */
+body {
+  background-color: var(--color-white); /* 흰색 배경 */
+  font-family: "Noto Serif", "Nanum Square Regular", sans-serif;
+  color: var(--color-black);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.plan-card {
+  background-color: var(--color-white);
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.plan-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.plan-card-body {
+  padding: 16px;
+}
+
+.plan-card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--color-red);
+}
+
+.plan-card-meta {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* 버튼 스타일 (미슐랭의 빨간 버튼 스타일 참고) */
+.review-button {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--color-red);
+  color: var(--color-white);
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 15px;
+}
+
+.review-button:hover {
+  background-color: var(--color-dark-red);
+}
