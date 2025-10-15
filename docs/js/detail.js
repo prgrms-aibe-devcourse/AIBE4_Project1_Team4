@@ -56,12 +56,12 @@ const renderPlans = (plansData) => {
               <div class="plan-actions">
                   <button 
                     data-plan-id="${plan.plan_id}" 
-                    class="view-reviews-button action-button gray-button" // ✨ action-button과 gray-button 클래스 추가
+                    class="view-reviews-button action-button gray-button" 
                   >
                     리뷰 보기 </button>
                   <button 
                     data-plan-id="${plan.plan_id}" 
-                    class="create-review-button action-button red-button" // ✨ action-button과 red-button 클래스 추가
+                    class="create-review-button action-button red-button" 
                   >
                     리뷰 작성 </button>
                 </div>
@@ -184,7 +184,7 @@ async function submitReview() {
   const reviewData = {
     plan_id: planId,
     review_rating: selectedRating,
-    review: content,
+    reviewt: content,
   };
   try {
     const response = await fetch("http://localhost:3000/reviews", {

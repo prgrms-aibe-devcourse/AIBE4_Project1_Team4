@@ -52,6 +52,23 @@ app.post("/reviews", async (req, res) => {
     review: data[0],
   });
 });
+
+app.get("/reviews/:planId", async (req, res) => {
+    const planId = req.params.planId;
+
+    const { data, error } = await supabase
+        .from("reviews")
+        .select("review_rating, review, created_at") 
+        .eq("plan_id", planId) 
+        .order("created_at", { ascending: false }); 
+
+    if (error) {
+        console.error("Superbase Fetch Reviews Error:", error.message);
+        return res.status(500).json({ error: "리뷰 조회 중 오류 발생" });
+    }
+
+    res.json(data);
+});
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
