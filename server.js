@@ -14,6 +14,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("bye");
@@ -27,6 +28,30 @@ app.get("/plans", async (req, res) => {
   res.json(data);
 });
 
+app.post("/reviews", async (req, res) => {
+  console.log("클라이언트로부터 받은 리뷰 데이터:", req.body);
+  const { plan_id, review_rating, review } = req.body;
+  const { data, error } = await supabase
+    .from("reviews")
+    .insert({
+      plan_id,
+      review_rating,
+      review,
+    })
+    .select("*");
+
+  if (error) {
+    console.error("Superbase Insert Error Details:", error);
+    return res
+      .status(500)
+      .json({ error: "데이터베이스 저장 오류", details: error.message });
+  }
+
+  res.status(201).json({
+    message: "리뷰 저장 성공",
+    review: data[0],
+  });
+});
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
