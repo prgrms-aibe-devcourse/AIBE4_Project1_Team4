@@ -89,13 +89,13 @@ body {
     color: white;
     font-size: 3em;
     font-weight: bold;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to right, #000000 50%, #000000 50%);
 }
 
 .hero-content-wrapper {
     /* 중앙 정렬 및 최대 너비 설정 */
     width: 100%;
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto; /* 👈 좌우 여백 auto로 중앙 정렬 */
     /* hero-section과 동일한 높이와 절대 위치를 가집니다. */
     position: absolute;
