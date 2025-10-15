@@ -1,0 +1,319 @@
+@import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap");
+
+:root {
+  --primary-color: #bb2637;
+  --primary-hover-color: #a91d2b;
+
+  --text-primary: #000000;
+  --text-secondary: #666;
+  --text-on-dark: #ffffff;
+
+  --background-light: #ffffff;
+  --background-grey-light: #f8f8f8;
+  --background-grey: #f6f6f6;
+  --background-dark: #000000;
+
+  --border-color-light: #e0e0e0;
+  --border-color-input: #ddd;
+}
+
+.trip-header h1,
+.day-tab,
+.section-title,
+.place-name,
+.bottom-btn {
+  font-family: "Noto Serif KR", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "NanumSquare", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 95px;
+  padding-bottom: 75px;
+}
+
+#main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--background-light);
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#main-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--background-light);
+  z-index: 1000;
+  border-top: 1px solid var(--border-color-light);
+}
+
+#main-content {
+  width: 100%;
+}
+
+.schedule-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--background-light);
+}
+
+.trip-header {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--background-light);
+  color: var(--text-primary);
+}
+
+.trip-header h1 {
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.trip-meta {
+  display: flex;
+  gap: 15px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  align-items: center;
+}
+
+.trip-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.day-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+  border-bottom: none;
+  padding: 10px 0;
+}
+
+.day-tab {
+  padding: 8px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.day-tab:hover {
+  background-color: var(--background-grey);
+}
+
+.day-tab.active {
+  background-color: var(--primary-color);
+  color: var(--text-on-dark);
+  font-weight: bold;
+}
+
+.map-container {
+  background-color: var(--background-grey-light);
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  padding: 40px;
+  margin-bottom: 30px;
+  min-height: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-placeholder {
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.place {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background: var(--background-light);
+  transition: box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.place:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.place-identifier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 80px;
+  flex-shrink: 0;
+  padding: 10px 5px;
+  background-color: var(--background-dark);
+  color: var(--text-on-dark);
+}
+
+.place-number {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.place-time {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-on-dark);
+}
+
+.place-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: var(--background-light);
+  transition: box-shadow 0.3s;
+}
+
+.place-information {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 10px;
+}
+
+.place-name,
+.place-address {
+  word-break: break-word;
+}
+
+.place-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.place-address {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.place-rating {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.stars {
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  font-size: 16px;
+}
+
+.rating-value {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.price-info {
+  font-size: 14px;
+}
+
+.price-indicator {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.place-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-top: 10px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.edit-btn:hover {
+  color: var(--text-primary);
+}
+
+.bottom-actions {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.bottom-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary-color);
+  color: var(--text-on-dark);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.bottom-btn:hover {
+  background: var(--primary-hover-color);
+}
