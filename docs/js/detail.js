@@ -207,7 +207,7 @@ async function submitReview() {
   const reviewData = {
     plan_id: planId,
     review_rating: selectedRating,
-    reviewt: content,
+    review: content,
   };
   try {
     const response = await fetch("http://localhost:3000/reviews", {
