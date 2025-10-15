@@ -177,8 +177,8 @@ const renderSchedule = () => {
             </div>
             <div class="place-actions">
             <div class="action-buttons">
-                <button class="edit-btn"><img src="./img/icons/icons-pencil.png" width=24px/></button>
-                <button class="delete-btn"><img src="./img/icons/icons-trashcan.png" width=24px/></button>
+                <button class="edit-btn"><img src="./img/icon/icon-pencil.png" width=24px/></button>
+                <button class="delete-btn"><img src="./img/icon/icon-trashcan.png" width=24px/></button>
             </div>
             </div>
         </div>
