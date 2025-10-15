@@ -279,6 +279,9 @@ const renderSchedule = () => {
                     <button class="price-option" data-value="3">$$$$</button>
                     <button class="price-option" data-value="4">$$$$$</button>
                 </div>
+                <input type="text" class="edit-memo" value="${
+                  "memo" in place && place.memo !== "" ? place.memo : ""
+                }" placeholder="메모를 입력하세요." maxlength="100">
             </div>
             <div class="place-actions">
                 <div class="action-buttons">
@@ -325,6 +328,8 @@ const renderSchedule = () => {
           priceSelector.dataset.price,
           10
         );
+        plansData.places[index].memo =
+          placeDiv.querySelector(".edit-memo").value;
 
         delete plansData.places[index].isEditing;
         sortPlacesByTime();
@@ -361,12 +366,17 @@ const renderSchedule = () => {
             <div class="price-info">
                 <span class="price-indicator">${priceSymbol}</span>
             </div>
+            ${
+              "memo" in place && place.memo !== ""
+                ? `<span class="place-memo">${place.memo}</span>`
+                : ""
+            }
             </div>
-            <div class="place-actions">
-            <div class="action-buttons">
-                <button class="edit-btn"><img src="./img/icon/icon-pencil.png" width=24px/></button>
-                <button class="delete-btn"><img src="./img/icon/icon-trashcan.png" width=24px/></button>
-            </div>
+              <div class="place-actions">
+              <div class="action-buttons">
+                  <button class="edit-btn"><img src="./img/icon/icon-pencil.png" width=24px/></button>
+                  <button class="delete-btn"><img src="./img/icon/icon-trashcan.png" width=24px/></button>
+              </div>
             </div>
         </div>
       `;
