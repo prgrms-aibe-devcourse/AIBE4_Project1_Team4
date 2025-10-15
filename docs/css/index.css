@@ -93,7 +93,7 @@ body {
     left: 0;
     right: 0;
     height: 100%;
-    background-image: url(../img/index-main.png);
+    background-image: url(../img/main.png);
 }
 
 /* 챗봇 컨테이너 - 히어로 섹션 위에 배치 */
@@ -244,6 +244,21 @@ body {
     background: #750000;
     border-color: #750000;
 }
+
+.btn-movePage {
+    background: #BB2637;
+    color: white;
+    border-color: #BB2637;
+    padding: 12px 40px;
+    font-size: 1.1em;
+}
+
+.btn-movePage:hover {
+    background: #750000;
+    border-color: #750000;
+}
+
+
 
 .result-cards {
     display: grid;
