@@ -1,0 +1,489 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Malgun Gothic', sans-serif;
+    background: #FFFFFF;
+}
+
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: white;
+    border-bottom: 2px solid #000000;
+}
+
+.logo-container {
+    width: 150px;
+    height: 60px;
+    border: 2px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+}
+
+.logo-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.nav-btn {
+    padding: 12px 30px;
+    background: white;
+    border: 2px solid #000000;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #000000;
+    display: inline-block;
+}
+
+.nav-btn:hover {
+    background: #000000;
+    color: white;
+}
+
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-placeholder {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3em;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content-wrapper {
+    /* 중앙 정렬 및 최대 너비 설정 */
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto; /* 👈 좌우 여백 auto로 중앙 정렬 */
+    /* hero-section과 동일한 높이와 절대 위치를 가집니다. */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-image: url(../img/index-main.png);
+}
+
+/* 챗봇 컨테이너 - 히어로 섹션 위에 배치 */
+.chat-box {
+    position: absolute;
+    left: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 700px;
+    height: 500px;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.chat-header {
+    display: none;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: transparent;
+}
+
+.chat-message {
+    margin-bottom: 15px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-bot {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.message-user {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    flex-shrink: 0;
+    border: 2px solid #000000;
+}
+
+.avatar-bot {
+    background: white;
+}
+
+.avatar-user {
+    background: #FFFFFF;
+    color: white;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 12px 12px;
+    border-radius: 8px;
+    line-height: 1.5;
+    font-size: 0.95em;
+}
+
+.message-bot .message-content {
+    background: #f5f5f5;
+    color: #000000;
+    border: 1px solid #e0e0e0;
+}
+
+.message-user .message-content {
+    background: #FFFFFF;
+    color: black;
+}
+
+.chat-input {
+    padding: 15px;
+    background: white;
+    border-top: 2px solid #000000;
+    justify-content: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 10px 25px;
+    font-size: 0.9em;
+    border: 2px solid #000000;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    background: white;
+    color: #000000;
+}
+
+.btn-yes:hover {
+    background: #BB2637;
+    color: white;
+    border-color: #BB2637;
+}
+
+.btn-no:hover {
+    background: #000000;
+    color: white;
+}
+
+.btn-maybe:hover {
+    background: #555;
+    color: white;
+    border-color: #555;
+}
+
+.btn-start {
+    background: #BB2637;
+    color: white;
+    border-color: #BB2637;
+    padding: 12px 40px;
+    font-size: 1.1em;
+}
+
+.btn-start:hover {
+    background: #750000;
+    border-color: #750000;
+}
+
+.result-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 0px;
+}
+
+/* 기존 .result-card 스타일을 수정합니다. */
+.result-card {
+    background: white;
+    width: 200px; /* max-width 대신 width로 고정 */
+    height: 220px; /* max-height 대신 height로 고정 */
+    border: 2px solid #BB2637;
+    border-radius: 8px;
+    
+    /* 내부 콘텐츠(이미지, 텍스트) 정렬을 위해 flexbox를 사용합니다. */
+    display: flex; 
+    flex-direction: column;
+    
+    /* padding은 내부 요소에서 개별적으로 처리하므로 제거합니다. */
+    /* padding: 15px; (제거) */ 
+    
+    /* text-align도 내부 요소에서 처리하므로 제거합니다. */
+    /* text-align: center; (제거) */
+}
+
+/* JavaScript에서 생성한 .result-card-content 클래스에 대한 스타일입니다.
+  실질적으로는 필요하지 않지만, 구조상 추가되었습니다.
+*/
+.result-card-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* 💡 핵심: 이미지 박스에 대한 스타일을 추가합니다. */
+.result-card-image-box {
+    width: 100%;
+    height: 120px; /* 이미지 영역의 높이를 지정합니다. */
+    
+    /* 배경 이미지 관련 속성 */
+    background-size: cover; /* 이미지가 div를 꽉 채우도록 설정 */
+    background-position: center; /* 이미지가 중앙에 오도록 설정 */
+    background-repeat: no-repeat;
+    
+    border-top-left-radius: 6px; /* 부모의 둥근 모서리에 맞춤 */
+    border-top-right-radius: 6px;
+}
+
+/* 💡 텍스트 영역에 대한 스타일을 추가합니다. */
+.result-card-text {
+    padding: 10px; /* 텍스트 주변에 여백을 줍니다. */
+    text-align: center; /* 텍스트를 중앙 정렬합니다. */
+    flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 기존 h3, p 태그 스타일은 그대로 두거나 필요에 맞게 수정합니다. */
+.result-card h3 {
+    color: #BB2637;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.result-card p {
+    color: #000000;
+    font-size: 0.85em;
+    line-height: 1.3;
+}
+
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    height: 100%;
+}
+
+.start-screen h2 {
+    color: #000000;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.start-screen p {
+    color: #FFFFFF;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.loading-dots {
+    display: inline-block;
+}
+
+.loading-dots span {
+    animation: blink 1.4s infinite;
+    animation-fill-mode: both;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 80%, 100% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+}
+
+.content-section {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+.section-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5px;
+    height: 50px;
+    background: #BB2637;
+}
+
+.carousel-container {
+    position: relative;
+    margin-top: 60px;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s ease;
+}
+
+.carousel-card {
+    min-width: 280px;
+    height: 400px;
+    background: white;
+    border: 3px solid #000000;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: #999;
+    position: relative;
+}
+
+.carousel-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* style.css의 .carousel-arrow 수정 */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    
+    border: none; 
+    background: transparent; 
+    
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em; 
+    color: #000000; 
+    transition: all 0.3s ease;
+    z-index: 10;
+    
+    /* 💡 추가: 텍스트를 수직 중앙 정렬하기 위한 속성 */
+    line-height: 1; /* 폰트 자체의 행 높이 재설정 */
+    padding-bottom: 5px; /* 시각적으로 더 잘 맞추기 위해 약간 조정 (선택 사항) */
+}
+
+.carousel-arrow:hover {
+    background: transparent;
+    color: #940000; 
+}
+
+.carousel-arrow:hover {
+    background: #BB2637;
+    color: white;
+    border-color: #BB2637;
+}
+
+.carousel-arrow.left {
+    left: -80px;
+}
+
+.carousel-arrow.right {
+    right: -80px;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #BB2637;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #750000;
+}
