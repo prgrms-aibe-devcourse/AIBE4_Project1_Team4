@@ -1,15 +1,15 @@
 // 임시 여행 계획 데이터.
 // 나중에 search 페이지에서 전달받은 데이터로 수정한다.
 const plansData = {
-  trip_start_date: "2025-10-15",
-  trip_end_date: "2025-10-17",
+  start_date: "2025-10-15",
+  end_date: "2025-10-17",
   region: "부산",
-  number_of_people: 1,
+  size: 1,
   places: [
     {
       visit_date: "2025-10-15",
       visit_time: "12:00",
-      place_name: "본전돼지국밥",
+      name: "본전돼지국밥",
       address: "부산광역시 동구 중앙대로214번길 3-8",
       price: 1,
       rating: 4.2,
@@ -17,7 +17,7 @@ const plansData = {
     {
       visit_date: "2025-10-15",
       visit_time: "15:00",
-      place_name: "원조 승기 씨앗 호떡",
+      name: "원조 승기 씨앗 호떡",
       address: "부산광역시 중구 비프광장로 36",
       price: 0,
       rating: 4.3,
@@ -25,7 +25,7 @@ const plansData = {
     {
       visit_date: "2025-10-15",
       visit_time: "18:00",
-      place_name: "자갈치시장",
+      name: "자갈치시장",
       address: "부산광역시 중구 자갈치해안로 52",
       price: 2,
       rating: 4.4,
@@ -33,7 +33,7 @@ const plansData = {
     {
       visit_date: "2025-10-16",
       visit_time: "13:00",
-      place_name: "가야밀면",
+      name: "가야밀면",
       address: "부산광역시 부산진구 가야대로 544-1",
       price: 1,
       rating: 4.3,
@@ -41,7 +41,7 @@ const plansData = {
     {
       visit_date: "2025-10-16",
       visit_time: "19:00",
-      place_name: "문화양곱창",
+      name: "문화양곱창",
       address: "부산광역시 부산진구 가야대로784번길 62",
       price: 3,
       rating: 4.1,
@@ -49,7 +49,7 @@ const plansData = {
     {
       visit_date: "2025-10-17",
       visit_time: "12:30",
-      place_name: "수변최고돼지국밥 민락본점",
+      name: "수변최고돼지국밥 민락본점",
       address: "부산광역시 수영구 광안해변로370번길 9-32",
       price: 1,
       rating: 4.6,
@@ -57,7 +57,7 @@ const plansData = {
     {
       visit_date: "2025-10-17",
       visit_time: "18:30",
-      place_name: "해운대기와집 대구탕",
+      name: "해운대기와집 대구탕",
       address: "부산광역시 해운대구 달맞이길104번길 46",
       price: 2,
       rating: 4.6,
@@ -103,7 +103,7 @@ const renderSchedule = () => {
   headerDiv.innerHTML = `
     <h1>${plansData.region}</h1>
     <div class="trip-meta">
-       <span class="trip-dates">${plansData.trip_start_date} ~ ${plansData.trip_end_date}</span>
+       <span class="trip-dates">${plansData.start_date} ~ ${plansData.end_date}</span>
     </div>
   `;
   headerContainer.appendChild(headerDiv);
@@ -164,7 +164,7 @@ const renderSchedule = () => {
         <div class="place-content">
             <div class="place-information">
             <h3 class="place-name">
-                ${place.place_name}
+                ${place.name}
             </h3>
             <p class="place-address">${place.address}</p>
             <div class="place-rating">
