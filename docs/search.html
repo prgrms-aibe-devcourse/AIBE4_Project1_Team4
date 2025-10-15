@@ -3,74 +3,110 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>여행계획 검색</title>
+    <title>AI 여행 계획 추천</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        line-height: 1.6;
+      }
+      .plan-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%;
+        max-width: 600px;
+      }
+      .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close-btn:hover,
+      .close-btn:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .place-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+      }
+      /* Map style */
+      #map {
+        height: 400px;
+        width: 100%;
+        margin-top: 15px;
+      }
+    </style>
   </head>
+
   <body>
-    <div class="InputForm">
-      <input
-        type="text"
-        class="SearchInput"
-        placeholder="어디로 떠나고 싶으신가요?"
-      />
-      <input type="text" class="SearchInput" placeholder="여행 기간 선택" />
-      <input type="text" class="SearchInput" placeholder="인원" />
-      <input type="checkbox" class="SearchInput" />
-      관광명소 추천받기
-      <button class="SearchBtn">검색</button>
+    <div>
+      <header>
+        <h1>AI 여행 계획 추천</h1>
+        <p>여행 정보를 입력해주세요. AI가 맞춤 여행 계획을 추천해 드립니다.</p>
+      </header>
+
+      <div>
+        <label for="region-input">여행지:</label>
+        <input id="region-input" type="text" placeholder="어디로 떠나시나요?" />
+        <label for="trip-start-date">여행 기간:</label>
+        <input id="trip-start-date" type="date" /> ~
+        <input id="trip-end-date" type="date" />
+        <label for="people-count-input">인원:</label>
+        <button id="decrease-btn">-</button>
+        <input
+          id="people-count-input"
+          type="text"
+          value="1"
+          style="width: 30px; text-align: center"
+        />
+        <button id="increase-btn">+</button>
+        <input id="sight-checkbox" type="checkbox" />
+        <label for="sight-checkbox">식당 주변 관광명소 추천 받기</label>
+        <button id="search-btn">추천 받기</button>
+      </div>
+
+      <hr />
+
+      <div id="loading" style="display: none">
+        <p>최적의 여행 계획 3가지를 생성 중입니다...</p>
+      </div>
+
+      <div id="suggest-wrapper"></div>
     </div>
 
-    <div class="SuggestForm">
-        <div class="PlanWrapper">
-            <h2 class="PlanDetails">계획1</h2>
-            <button class="CarouselBtn">←</button>
-            <div class="PlanCard">
-          <h3 class="PlanTitle">1일차 계획</h3>
-          <p class="PlanDetails">세부 계획1</p>
-          <p class="PlanDetails">세부 계획2</p>
-          <p class="PlanDetails">세부 계획3</p>
-          <button class="CarouselBtn">→</button>
-        </div>
-        <div class="Summarywrapper">
-            <h3 class="SummaryTitle">여행 계획 요약</h3>
-            <p class="SummaryDetails">대표 음식점 사진</p>
-            <p class="SummaryDetails">세부 요약</p>
-        </div>
+    <!-- Modal HTML with Map Div -->
+    <div id="placeModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2 id="modal-place-name">장소 정보</h2>
+        <div id="map"></div>
+      </div>
     </div>
 
-    <div class="SuggestForm">
-        <div class="PlanWrapper">
-            <h2 class="PlanDetails">계획2</h2>
-            <button class="CarouselBtn">←</button>
-            <div class="PlanCard">
-          <h3 class="PlanTitle">1일차 계획</h3>
-          <p class="PlanDetails">세부 계획1</p>
-          <p class="PlanDetails">세부 계획2</p>
-          <p class="PlanDetails">세부 계획3</p>
-          <button class="CarouselBtn">→</button>
-        </div>
-        <div class="Summarywrapper">
-            <h3 class="SummaryTitle">여행 계획 요약</h3>
-            <p class="SummaryDetails">대표 음식점 사진</p>
-            <p class="SummaryDetails">세부 요약</p>
-        </div>
-    </div>
-
-    <div class="SuggestForm">
-        <div class="PlanWrapper">
-            <h2 class="PlanDetails">계획3</h2>
-            <button class="CarouselBtn">←</button>
-            <div class="PlanCard">
-          <h3 class="PlanTitle">1일차 계획</h3>
-          <p class="PlanDetails">세부 계획1</p>
-          <p class="PlanDetails">세부 계획2</p>
-          <p class="PlanDetails">세부 계획3</p>
-          <button class="CarouselBtn">→</button>
-        </div>
-        <div class="Summarywrapper">
-            <h3 class="SummaryTitle">여행 계획 요약</h3>
-            <p class="SummaryDetails">대표 음식점 사진</p>
-            <p class="SummaryDetails">세부 요약</p>
-        </div>
-    </div>
+    <script src="../docs/js/search.js"></script>
   </body>
 </html>
+
