@@ -193,6 +193,7 @@ function scrollToBottom() {
 }
 
 function restartGame() {
+    sessionStorage.removeItem('foodList');
     location.reload();
 }
 
@@ -217,11 +218,18 @@ async function getFoodRecommendation(answersLog) {
             .map((a) => `- ${a.question_text}: ${a.user_answer}`)
             .join("\n")}
         
-        위 답변들을 바탕으로 사용자에게 가장 적합한 음식 4가지를 추천하고, 각 음식에 대한 1줄 설명을 JSON 배열 형식으로만 응답해주세요.
-        음식의 이름은 위키피디아에 정의가 있는 음식이름으로 반환해야합니다. ex) 스파게티 , 순대국 , 감바스 알 아히요
-        응답은 반드시 아래 JSON 구조를 따라야 합니다. 다른 설명이나 텍스트를 추가하지 마세요.
+        위 답변을 바탕으로 사용자가 실제로 한국에서 구입·먹을 수 있는 음식 4개를 추천해주세요.  
+        너무 생소하여 한국 내 유통/판매가 거의 없는 해외 음식(예: 특이 현지 요리, 지역 한정 메뉴 등)은 포함하지 마세요.  
+
+        각 음식은 위키피디아에 정의되어 있는 정확한 음식명이여야 하며,  
+        추천 음식 예시: 스파게티, 순대국, 감바스 알 아히요 와 같이 원본이 되는 음식명만 사용하세요.
+        베이컨 크림 파스타 등의 바리에이션이 들어간 음식은 안됩니다.
+        응답은 반드시 아래의 JSON 배열 구조만으로 출력하세요.  
+        다른 부가 설명 및 텍스트는 절대 추가하지 마세요.
+
         [{"name": "음식1", "description": "설명1"}, {"name": "음식2", "description": "설명2"}, ...]
     `.trim();
+
 
     // 2. Gemini API 요청
     const response = await fetch(
@@ -327,9 +335,12 @@ async function finishGame() {
     try {
         // API 요청 및 결과 대기
         const recommendationResults = await getFoodRecommendation(answersLog);
-
         // 로딩 메시지 제거
         removeLoadingMessage();
+        // 세션스토리지에 파싱된 배열 저장 (foodListArray -> foodList)
+        const foodListArray = recommendationResults.map(item => item.name);
+        sessionStorage.setItem('foodList', JSON.stringify(foodListArray));
+        console.log(foodListArray);
 
         // 결과 표시
         addBotMessage("분석이 완료되었습니다! 🎉");
@@ -429,6 +440,9 @@ function showRestartButton() {
         <p style="margin-bottom: 12px;">다시 추천받으시겠어요?</p>
         <button class="btn btn-start" onclick="restartGame()" style="padding: 8px 25px; font-size: 0.95em;">
             다시 시작하기
+        </button>
+        <button class="btn btn-movePage" onclick="window.location.href='search.html'" style="padding: 8px 25px; font-size: 0.95em;">
+            자세히 보기
         </button>
     `;
 
