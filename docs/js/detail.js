@@ -6,6 +6,14 @@ const reviewRatingStars = document.querySelectorAll("#reviewRating .star");
 let selectedRating = 0;
 const submitReviewButton = document.getElementById("submitReviewButton");
 const reviewContent = document.getElementById("reviewContent");
+const reviewsListModalContainer = document.getElementById(
+  "reviewsListModalContainer"
+);
+const closeReviewsListModalButton = document.getElementById(
+  "closeReviewsListModalButton"
+);
+const reviewsList = document.getElementById("reviewsList");
+const noReviewsMessage = document.getElementById("noReviewsMessage");
 
 async function fetchPlans() {
   try {
@@ -99,6 +107,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (submitReviewButton) {
     submitReviewButton.addEventListener("click", submitReview);
   }
+
+  if (reviewsListModalContainer) {
+    reviewsListModalContainer.addEventListener("click", (e) => {
+      if (e.target === reviewsListModalContainer) {
+        closeReviewsListModal();
+      }
+    });
+  }
+
+  if (closeReviewsListModalButton) {
+    closeReviewsListModalButton.addEventListener(
+      "click",
+      closeReviewsListModal
+    );
+  }
 });
 
 function handlePlanAction(event) {
@@ -117,7 +140,7 @@ function handlePlanAction(event) {
     openReviewModal(planId);
   } else if (button.classList.contains("view-reviews-button")) {
     console.log("리뷰 보기 버튼 클릭. Plan ID: ${planId}");
-    // 여기에 리뷰 보기 기능을 구현할 예정
+    fetchAndDisplayReviews(planId);
   }
 }
 
@@ -205,5 +228,89 @@ async function submitReview() {
   } catch (error) {
     console.error("리뷰 저장 중 오류 발생", error);
     alert(error.message);
+  }
+}
+
+function closeReviewsListModal() {
+  if (reviewsListModalContainer) {
+    reviewsListModalContainer.classList.add("hidden");
+    document.body.style.overflow = "auto";
+  }
+}
+
+function renderReviewCards(reviews) {
+  if (reviews.length === 0) {
+    reviewsList.innerHTML = "";
+    noReviewsMessage.classList.remove("hidden");
+    return;
+  }
+
+  noReviewsMessage.classList.add("hidden");
+
+  const reviewCardsHtml = reviews
+    .map((review) => {
+      const rating = review.review_rating || 0;
+      const fullStars = "★".repeat(rating);
+      const emptyStars = "☆".repeat(5 - rating);
+      const starsHtml = fullStars + emptyStars;
+
+      const date = new Date(review.created_at);
+      const dateString = date.toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+
+      const content = review.review || "내용 없음";
+
+      return `
+          <div class="review-card">
+              <div class="review-header">
+                  <span class="review-date">${dateString}</span>
+              </div>
+              
+              <span class="review-rating-display">${starsHtml}</span>
+              
+              <p class="review-content">${content}</p>
+          </div>
+      `;
+    })
+    .join("");
+
+  reviewsList.innerHTML = reviewCardsHtml;
+}
+
+async function fetchAndDisplayReviews(planId) {
+  if (!reviewsListModalContainer) {
+    console.error("리뷰 목록 모달 컨테이너를 찾을 수 없습니다.");
+    return;
+  }
+
+  try {
+    reviewsList.innerHTML = `<div class="no-reviews-message">리뷰를 불러오는 중...</div>`;
+    reviewsListModalContainer.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    const response = await fetch(`http://localhost:3000/reviews/${planId}`);
+
+    if (!response.ok) {
+      throw new Error("리뷰 목록을 불러오는 데 실패했습니다.");
+    }
+
+    const reviews = await response.json();
+
+    const plansData = await fetchPlans();
+    const currentPlan = plansData
+      ? plansData.find((p) => p.plan_id === planId)
+      : null;
+    document.getElementById("reviewsTitlePlanName").textContent = currentPlan
+      ? currentPlan.region
+      : "선택된 계획";
+
+    renderReviewCards(reviews);
+  } catch (error) {
+    console.error("리뷰 조회 중 오류 발생:", error);
+    alert(error.message);
+    closeReviewsListModal();
   }
 }
