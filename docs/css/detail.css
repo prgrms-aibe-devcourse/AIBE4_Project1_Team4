@@ -5,9 +5,8 @@
   --color-white: #ffffff;
 }
 
-/* 기본 레이아웃 */
 body {
-  background-color: var(--color-white); /* 흰색 배경 */
+  background-color: var(--color-white);
   font-family: "Noto Serif", "Nanum Square Regular", sans-serif;
   color: var(--color-black);
 }
@@ -20,7 +19,7 @@ body {
 
 .plan-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
 }
 
@@ -55,8 +54,107 @@ body {
   margin-bottom: 4px;
 }
 
-/* 버튼 스타일 (미슐랭의 빨간 버튼 스타일 참고) */
-.review-button {
+.hidden {
+  display: none !important;
+}
+#reviewModalContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body {
+  width: 90%;
+  max-width: 500px;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  position: relative;
+}
+
+.modal-body .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+#closeModalButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+#closeModalButton:hover {
+  color: var(--color-dark-red);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group:last-of-type {
+  margin-bottom: 1.5rem;
+}
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.review-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.review-rating .star {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.review-rating .star.selected,
+.review-rating .star:hover {
+  color: var(--color-red);
+}
+
+.form-textarea {
+  width: 95%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+#reviewContent::placeholder {
+  font-size: 1.25rem;
+  color: #999;
+  font-weight: 600;
+}
+
+#submitReviewButton {
   width: 100%;
   padding: 10px 15px;
   background-color: var(--color-red);
@@ -67,8 +165,47 @@ body {
   cursor: pointer;
   transition: background-color 0.2s ease;
   margin-top: 15px;
+  font-size: 1.1rem;
 }
 
-.review-button:hover {
+#submitReviewButton:hover {
   background-color: var(--color-dark-red);
+}
+
+.action-button {
+  padding: 8px 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  flex-grow: 1;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.plan-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.red-button {
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
+.red-button:hover {
+  background-color: var(--color-dark-red);
+}
+
+.gray-button {
+  background-color: var(--color-white);
+  color: #444;
+  border: 1px solid #ccc;
+}
+
+.gray-button:hover {
+  background-color: #f0f0f0;
+  border-color: #bbb;
 }

@@ -1,20 +1,26 @@
 const planGrid = document.getElementById("planGrid");
 
+const modalContainer = document.getElementById("reviewModalContainer");
+const closeModalButton = document.getElementById("closeModalButton");
+const reviewRatingStars = document.querySelectorAll("#reviewRating .star");
+let selectedRating = 0;
+const submitReviewButton = document.getElementById("submitReviewButton");
+const reviewContent = document.getElementById("reviewContent");
+
 async function fetchPlans() {
   try {
-      // Express 서버의 /plans 엔드포인트로 요청
-      const response = await fetch("http://localhost:3000/plans"); 
-      
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const plansData = await response.json();
-      return plansData;
+    // Express 서버의 /plans 엔드포인트로 요청
+    const response = await fetch("http://localhost:3000/plans");
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const plansData = await response.json();
+    return plansData;
   } catch (error) {
-      console.error("Express 서버에서 데이터를 가져오는 중 오류 발생: ", error);
-      return null;
+    console.error("Express 서버에서 데이터를 가져오는 중 오류 발생: ", error);
+    return null;
   }
 }
 
@@ -48,20 +54,17 @@ const renderPlans = (plansData) => {
               <p class="plan-card-meta">👨‍👩‍👧‍👦 인원: ${plan.size}명</p>
               
               <div class="plan-actions">
-                <button 
-                  data-plan-id="${plan.plan_id}" 
-                  class="view-reviews-button"
-                >
-                  리뷰 보기 🔍
-                </button>
-              
-                <button 
-                  data-plan-id="${plan.plan_id}" 
-                  class="create-review-button"
-                >
-                  리뷰 작성 ✍️
-                </button>
-              </div>
+                  <button 
+                    data-plan-id="${plan.plan_id}" 
+                    class="view-reviews-button action-button gray-button" // ✨ action-button과 gray-button 클래스 추가
+                  >
+                    리뷰 보기 </button>
+                  <button 
+                    data-plan-id="${plan.plan_id}" 
+                    class="create-review-button action-button red-button" // ✨ action-button과 red-button 클래스 추가
+                  >
+                    리뷰 작성 </button>
+                </div>
             </div>
           </div>
         `;
@@ -76,4 +79,131 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (plansData) {
     renderPlans(plansData);
   }
+
+  if (planGrid) {
+    planGrid.addEventListener("click", handlePlanAction);
+  }
+
+  if (closeModalButton) {
+    closeModalButton.addEventListener("click", closeReviewModal);
+  }
+
+  if (modalContainer) {
+    modalContainer.addEventListener("click", (e) => {
+      if (e.target === modalContainer) {
+        closeReviewModal();
+      }
+    });
+  }
+
+  if (submitReviewButton) {
+    submitReviewButton.addEventListener("click", submitReview);
+  }
 });
+
+function handlePlanAction(event) {
+  const button = event.target.closest(
+    ".create-review-button, .view-reviews-button"
+  );
+
+  if (!button) {
+    return;
+  }
+
+  const planId = button.dataset.planId;
+
+  if (button.classList.contains("create-review-button")) {
+    console.log("리뷰 작성 버튼 클릭. Plan ID: ${planId}");
+    openReviewModal(planId);
+  } else if (button.classList.contains("view-reviews-button")) {
+    console.log("리뷰 보기 버튼 클릭. Plan ID: ${planId}");
+    // 여기에 리뷰 보기 기능을 구현할 예정
+  }
+}
+
+function openReviewModal(planId) {
+  if (!modalContainer) {
+    console.error("리뷰 모달 컨테이너를 찾을 수 없습니다.");
+    return;
+  }
+
+  modalContainer.classList.remove("hidden");
+
+  modalContainer.dataset.currentPlanId = planId;
+
+  document.body.style.overflow = "hidden";
+
+  selectedRating = 0;
+  highlightStars(0);
+  document.getElementById("reviewContent").value = "";
+}
+
+function closeReviewModal() {
+  if (modalContainer) {
+    modalContainer.classList.add("hidden");
+    document.body.style.overflow = "auto";
+  }
+}
+
+reviewRatingStars.forEach((star) => {
+  star.addEventListener("click", () => {
+    const rating = parseInt(star.dataset.rating);
+    selectedRating = rating;
+    highlightStars(rating);
+  });
+
+  star.addEventListener("mouseover", () => {
+    const rating = parseInt(star.dataset.rating);
+    highlightStars(rating);
+  });
+
+  star.addEventListener("mouseout", () => {
+    highlightStars(selectedRating);
+  });
+});
+
+function highlightStars(rating) {
+  reviewRatingStars.forEach((star) => {
+    if (parseInt(star.dataset.rating) <= rating) {
+      star.classList.add("selected");
+    } else {
+      star.classList.remove("selected");
+    }
+  });
+}
+
+async function submitReview() {
+  const planId = modalContainer.dataset.currentPlanId;
+  const content = reviewContent.value.trim();
+
+  if (content.length < 5) {
+    alert("리뷰 내용은 5자 이상 입력해야 합니다.");
+    return;
+  }
+
+  const reviewData = {
+    plan_id: planId,
+    review_rating: selectedRating,
+    review: content,
+  };
+  try {
+    const response = await fetch("http://localhost:3000/reviews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reviewData),
+    });
+    if (!response.ok) {
+      throw new Error("리뷰 저장에 실패했습니다.");
+    }
+    const result = await response.json();
+    console.log("리뷰 저장 성공", result);
+
+    alert("리뷰가 성공적으로 저장되었습니다.");
+    closeReviewModal();
+  } catch (error) {
+    console.error("리뷰 저장 중 오류 발생", error);
+    alert(error.message);
+  }
+}
