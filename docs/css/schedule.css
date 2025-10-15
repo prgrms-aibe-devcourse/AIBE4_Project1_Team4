@@ -223,18 +223,12 @@ body {
   font-weight: bold;
   color: var(--text-primary);
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .place-address {
   color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 .place-rating {
@@ -280,7 +274,9 @@ body {
 }
 
 .edit-btn,
-.delete-btn {
+.delete-btn,
+.save-btn,
+.cancel-btn {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -290,8 +286,67 @@ body {
   transition: color 0.3s;
 }
 
-.edit-btn:hover {
+.edit-btn:hover,
+.cancel-btn:hover {
   color: var(--text-primary);
+}
+
+.place-information input,
+.place-identifier input {
+  font-family: "NanumSquare", sans-serif;
+  font-size: 14px;
+  border: 1px solid var(--border-color-input);
+  border-radius: 4px;
+  padding: 6px 10px;
+  width: 100%;
+}
+.place-identifier .edit-time {
+  width: 70px;
+  text-align: center;
+  background-color: var(--background-grey);
+  color: var(--text-primary);
+  border-color: var(--border-color-input);
+}
+.place-information .edit-place-name {
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Noto Serif KR", sans-serif;
+}
+.rating-editor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rating-editor input {
+  width: 60px;
+  font-weight: bold;
+  text-align: center;
+}
+.rating-editor span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.price-selector {
+  display: flex;
+  gap: 8px;
+}
+.price-option {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color-input);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--background-light);
+  color: var(--text-secondary);
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.price-option:hover {
+  border-color: var(--text-primary);
+}
+.price-option.selected {
+  background: var(--primary-color);
+  color: var(--text-on-dark);
+  border-color: var(--primary-color);
 }
 
 .bottom-actions {
