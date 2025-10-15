@@ -21,7 +21,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/plans", async (req, res) => {
-  const { data, error } = await supabase.from("plans").select("*");
+  const { data, error } = await supabase.from("plans").select(`
+    plan_id,
+    start_date,
+    end_date,
+    size,
+    region,
+    plan_items (
+        places (
+            name
+        )
+    )
+`);
   if (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -54,20 +65,20 @@ app.post("/reviews", async (req, res) => {
 });
 
 app.get("/reviews/:planId", async (req, res) => {
-    const planId = req.params.planId;
+  const planId = req.params.planId;
 
-    const { data, error } = await supabase
-        .from("reviews")
-        .select("review_rating, review, created_at") 
-        .eq("plan_id", planId) 
-        .order("created_at", { ascending: false }); 
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("review_rating, review, created_at")
+    .eq("plan_id", planId)
+    .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error("Superbase Fetch Reviews Error:", error.message);
-        return res.status(500).json({ error: "리뷰 조회 중 오류 발생" });
-    }
+  if (error) {
+    console.error("Superbase Fetch Reviews Error:", error.message);
+    return res.status(500).json({ error: "리뷰 조회 중 오류 발생" });
+  }
 
-    res.json(data);
+  res.json(data);
 });
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);

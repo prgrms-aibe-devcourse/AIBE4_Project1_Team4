@@ -303,3 +303,24 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
 }
+
+.plan-card-places {
+  margin-top: 15px;
+  margin-bottom: 12px;
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 12px;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.plan-card-places .places-label {
+  font-weight: bold;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+.plan-card-places .places-content {
+  font-weight: 500;
+  color: #666;
+}
