@@ -1,18 +1,16 @@
 :root {
-  --color-red: #bb2637; /* 버튼, 포인트 컬러 */
-  --color-dark-red: #a91d2b; /* 마우스 호버 및 애니메이션 */
-  --color-black: #000000;
-  --color-white: #ffffff;
-}
-
-body {
-  background-color: var(--color-white);
-  font-family: "Noto Serif", "Nanum Square Regular", sans-serif;
-  color: var(--color-black);
+  --primary-color: #bb2637;
+  --primary-hover-color: #a91d2b;
+  --text-primary: #000000;
+  --text-on-dark: #ffffff;
+  --color-red: var(--primary-color);
+  --color-dark-red: var(--primary-hover-color);
+  --color-black: var(--text-primary);
+  --color-white: var(--text-on-dark);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -45,13 +43,13 @@ body {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 8px;
-  color: var(--color-red);
+  color: var(--primary-color);
 }
 
 .plan-card-meta {
   font-size: 0.875rem;
   color: #666;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
 }
 
 .hidden {
@@ -202,7 +200,7 @@ body {
 }
 
 .red-button {
-  background-color: var(--color-red);
+  background-color: var(--primary-color);
   color: var(--color-white);
 }
 
@@ -316,10 +314,10 @@ body {
 }
 
 .plan-card-places {
-  margin-top: 5px;
+  margin-top: 2px;
   margin-bottom: 8px;
   border-top: none;
-  padding-top: 5px;
+  padding-top: 0;
   font-size: 0.95rem;
   color: #444;
   line-height: 1.4;
@@ -342,4 +340,15 @@ body {
   height: 18px;
   vertical-align: middle;
   margin-right: 5px;
+}
+
+.plan-card-places .meta-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.plan-card-meta:last-of-type {
+  margin-bottom: 0;
 }

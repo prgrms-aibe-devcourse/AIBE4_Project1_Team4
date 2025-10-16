@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>여행계획 리뷰</title>
+    <link rel="stylesheet" href="css/index.css" />
+
     <link rel="stylesheet" href="css/detail.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap"
@@ -11,9 +13,23 @@
     />
   </head>
   <body>
-    <div class="container">
-      <h1>여행 계획</h1>
+    <div class="top-nav-container">
+      <div class="top-nav">
+        <div class="logo-container">
+          <span class="logo">
+            <a href="index.html">
+              <img src="./img/index-logo.png" />
+            </a>
+          </span>
+        </div>
+        <div class="nav-box">
+          <a href="search.html" class="nav-btn">search</a>
+          <a href="schedule.html" class="nav-btn">schedule</a>
+        </div>
+      </div>
+    </div>
 
+    <div class="container">
       <div class="plan-grid" id="planGrid"></div>
     </div>
 
