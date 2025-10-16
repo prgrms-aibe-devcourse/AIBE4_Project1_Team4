@@ -21,7 +21,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/plans", async (req, res) => {
-  const { data, error } = await supabase.from("plans").select("*");
+  const { data, error } = await supabase.from("plans").select(`
+    plan_id,
+    start_date,
+    end_date,
+    size,
+    region,
+    plan_items (
+        places (
+            name
+        )
+    )
+`);
   if (error) {
     return res.status(400).json({ error: error.message });
   }
