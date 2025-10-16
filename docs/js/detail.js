@@ -88,15 +88,11 @@ const renderPlans = (plansData) => {
               </p></p>
 
               <div class="plan-card-places"> 
+                  <img src="img/icon/icon-map.png" alt="장소" class="meta-icon" />
                   <span class="places-label">방문 장소 : </span>
                   <span class="places-content">${mainPlacesContent}</span>
               </div>
-              
-              <div class="plan-card-places"> 
-                  <span class="places-label">방문 장소: </span>
-                  <span class="places-content">${mainPlacesContent}</span>
-              </div>
-              
+            
               <div class="plan-actions">
                   <button 
                     data-plan-id="${plan.plan_id}" 
