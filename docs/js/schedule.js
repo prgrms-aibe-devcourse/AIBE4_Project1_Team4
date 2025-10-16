@@ -68,6 +68,7 @@ const plansData = {
 const headerContainer = document.querySelector("#main-header");
 const mainContainer = document.querySelector("#main-content");
 const footerContainer = document.querySelector("#main-footer");
+const popupContainer = document.querySelector("#popup-container");
 let currentDay = 1;
 
 const getUniqueDates = () => {
@@ -112,11 +113,90 @@ const autoCorrectTime = (timeStr) => {
   return "12:00";
 };
 
-let uniqueDates = getUniqueDates();
-let days = uniqueDates.length;
+const showDeletePopup = (place, index) => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">'${place.name}'<br>이 일정을 삭제하시겠습니까?</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+
+  // CSS 전환을 위해 잠시 후에 팝업창을 띄운다.
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", () => {
+      plansData.places.splice(index, 1);
+      hideDeletePopup();
+      renderSchedule();
+    });
+
+  const cancelAction = () => hideDeletePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
+};
+
+const showDeleteRestrictionPopup = () => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">일정은 최소 1개 이상 필요합니다.</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+
+  // CSS 전환을 위해 잠시 후에 팝업창을 띄운다.
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  const cancelAction = () => hideDeletePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
+};
+
+const hideDeletePopup = () => {
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  if (overlay) {
+    overlay.classList.remove("visible");
+    // 전환이 끝난 후 팝업창 내용을 지운다.
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+      },
+      { once: true }
+    );
+  }
+};
+
 sortPlacesByTime();
 
 const renderSchedule = () => {
+  let uniqueDates = getUniqueDates();
+  let days = uniqueDates.length;
+
   headerContainer.innerHTML = "";
   mainContainer.innerHTML = "";
   footerContainer.innerHTML = "";
@@ -295,6 +375,16 @@ const renderSchedule = () => {
         plansData.places.forEach((p) => delete p.isEditing);
         plansData.places[index].isEditing = true;
         renderSchedule();
+      });
+
+      placeDiv.querySelector(".delete-btn").addEventListener("click", () => {
+        // 각 날짜마다 최소 1개의 일정은 가지도록 한다.
+        if (currentDayPlaces.length > 1) {
+          showDeletePopup(place, index);
+          showPopup(true);
+        } else {
+          showDeleteRestrictionPopup();
+        }
       });
     }
 
