@@ -116,6 +116,22 @@ const autoCorrectTime = (timeStr) => {
   return "12:00";
 };
 
+const hidePopup = () => {
+  console.log("hidepopup");
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  if (overlay) {
+    overlay.classList.remove("visible");
+    // 전환이 끝난 후 팝업창 내용을 지운다.
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+      },
+      { once: true }
+    );
+  }
+};
+
 const showDeletePopup = (place, index) => {
   popupContainer.innerHTML = `
     <div class="popup-overlay">
@@ -164,8 +180,6 @@ const showDeleteRestrictionPopup = () => {
     </div>
   `;
   const overlay = popupContainer.querySelector(".popup-overlay");
-
-  // CSS 전환을 위해 잠시 후에 팝업창을 띄운다.
   setTimeout(() => overlay.classList.add("visible"), 10);
 
   const cancelAction = () => hidePopup();
@@ -179,21 +193,6 @@ const showDeleteRestrictionPopup = () => {
   });
 };
 
-const hidePopup = () => {
-  const overlay = popupContainer.querySelector(".popup-overlay");
-  if (overlay) {
-    overlay.classList.remove("visible");
-    // 전환이 끝난 후 팝업창 내용을 지운다.
-    overlay.addEventListener(
-      "transitionend",
-      () => {
-        popupContainer.innerHTML = "";
-      },
-      { once: true }
-    );
-  }
-};
-
 const showLoading = () => {
   document.body.classList.add("saving");
   loadingOverlay.classList.add("visible");
@@ -202,6 +201,64 @@ const showLoading = () => {
 const hideLoading = () => {
   document.body.classList.remove("saving");
   loadingOverlay.classList.remove("visible");
+};
+
+const savePlan = async () => {
+  showLoading();
+  try {
+    const response = await fetch(`${serverUrl}/schedule`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(plansData),
+    });
+
+    if (!response.ok) {
+      throw new Error("서버에서 에러가 발생했습니다.");
+    }
+
+    console.log("계획 저장 성공");
+    showSaveResultPopup(true);
+  } catch (error) {
+    console.error("계획 저장 실패: ", error);
+    showSaveResultPopup(false);
+  } finally {
+    hideLoading();
+  }
+};
+
+const showSaveConfirmPopup = () => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">이 일정으로 저장하시겠습니까?</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", () => {
+      hidePopup();
+      savePlan();
+    });
+
+  const cancelAction = () => hidePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
 };
 
 const showSaveResultPopup = (isSuccess) => {
@@ -221,23 +278,14 @@ const showSaveResultPopup = (isSuccess) => {
   `;
 
   const overlay = popupContainer.querySelector(".popup-overlay");
-  const confirmBtn = popupContainer.querySelector(".popup-confirm-btn");
+  setTimeout(() => overlay.classList.add("visible"), 10);
 
-  const closePopup = () => {
-    overlay.classList.remove("visible");
-    overlay.addEventListener(
-      "transitionend",
-      () => {
-        popupContainer.innerHTML = "";
-      },
-      { once: true }
-    );
-  };
-
-  confirmBtn.addEventListener("click", closePopup);
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", hidePopup);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
-      closePopup();
+      hidePopup();
     }
   });
 };
@@ -464,30 +512,7 @@ const renderSchedule = () => {
 
   bottomActions
     .querySelector(".bottom-btn")
-    .addEventListener("click", async () => {
-      showLoading();
-      try {
-        const response = await fetch(`${serverUrl}/schedule`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(plansData),
-        });
-
-        if (!response.ok) {
-          throw new Error("서버에서 에러가 발생했습니다.");
-        }
-
-        console.log("계획 저장 성공");
-        showSaveResultPopup(true); // 성공 팝업
-      } catch (error) {
-        console.error("계획 저장 실패: ", error);
-        showSaveResultPopup(false); // 실패 팝업
-      } finally {
-        hideLoading(); // 로딩 종료
-      }
-    });
+    .addEventListener("click", showSaveConfirmPopup);
   footerContainer.appendChild(bottomActions);
 };
 
