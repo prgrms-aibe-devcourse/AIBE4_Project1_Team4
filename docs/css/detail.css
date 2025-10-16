@@ -51,7 +51,7 @@ body {
 .plan-card-meta {
   font-size: 0.875rem;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .hidden {
@@ -198,7 +198,7 @@ body {
 .plan-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .red-button {
@@ -316,22 +316,30 @@ body {
 }
 
 .plan-card-places {
-  margin-top: 15px;
-  margin-bottom: 12px;
-  border-top: 1px dashed #e0e0e0;
-  padding-top: 12px;
+  margin-top: 5px;
+  margin-bottom: 8px;
+  border-top: none;
+  padding-top: 5px;
   font-size: 0.95rem;
   color: #444;
   line-height: 1.4;
 }
 
 .plan-card-places .places-label {
-  font-weight: bold;
-  color: var(--color-black);
-  white-space: nowrap;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 4px;
 }
 
 .plan-card-places .places-content {
-  font-weight: 500;
+  font-size: 0.875rem;
   color: #666;
+  margin-bottom: 4px;
+}
+
+.plan-card-meta .meta-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
 }

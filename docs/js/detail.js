@@ -69,20 +69,26 @@ const renderPlans = (plansData) => {
             <div class="plan-card-body">
               <h3 class="plan-card-title">${cardTitle}</h3> 
               <p class="plan-card-meta">
-                🗓️ 기간: ${durationText}
+                <img src="img/icon/icon-calendar.png" alt="기간" class="meta-icon" /> 기간: ${durationText}
               </p>
               <p class="plan-card-meta">
-                📍 지역: ${plan.region} 
+                <img src="img/icon/icon-location.png" alt="지역" class="meta-icon" /> 지역: ${
+                  plan.region
+                }
                 <span style="color: ${
                   isDayTrip ? "#555" : "#BB2637"
                 }; font-weight: 500;">
                   
                 </span>
               </p>
-              <p class="plan-card-meta">👨‍👩‍👧‍👦 인원: ${plan.size}명</p>
+              <p class="plan-card-meta">
+                <img src="img/icon/icon-user.png" alt="인원" class="meta-icon" /> 인원: ${
+                  plan.size
+                }명
+              </p></p>
 
               <div class="plan-card-places"> 
-                  <span class="places-label">방문 장소: </span>
+                  <span class="places-label">방문 장소 : </span>
                   <span class="places-content">${mainPlacesContent}</span>
               </div>
               
