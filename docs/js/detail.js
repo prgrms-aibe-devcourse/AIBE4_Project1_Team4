@@ -34,7 +34,7 @@ async function fetchPlans() {
 
 const renderPlans = (plansData) => {
   if (!planGrid) return;
-  planGrid.innerHTML = ""; // 기존 내용 초기화
+  planGrid.innerHTML = "";
 
   plansData.forEach((plan) => {
     const isDayTrip = plan.start_date === plan.end_date;
@@ -89,6 +89,11 @@ const renderPlans = (plansData) => {
 
               <div class="plan-card-places"> 
                   <span class="places-label">방문 장소 : </span>
+                  <span class="places-content">${mainPlacesContent}</span>
+              </div>
+              
+              <div class="plan-card-places"> 
+                  <span class="places-label">방문 장소: </span>
                   <span class="places-content">${mainPlacesContent}</span>
               </div>
               
