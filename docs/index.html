@@ -11,7 +11,7 @@
             <div class="top-nav">
                 <div class="logo-container">
                     <span class="logo">
-                        <img src="./img/index-logo.png">
+                        <img src="./img/index-logo.png" />
                     </span>
                 </div>
                 <div class="nav-box">
@@ -71,36 +71,56 @@
         </div>
 
         <div class="content-section">
-            <h2 class="section-title">당일치기 여행 추천지</h2>
+            <div class="section-title-container">
+                <h2 class="section-title">당일치기 여행 추천지</h2>
+                <div class="arrow-container">
+                    <button
+                        class="carousel-arrow left"
+                        onclick="scrollCarousel(1)"
+                    >
+                        &lt;
+                    </button>
+                    <button
+                        class="carousel-arrow right"
+                        onclick="scrollCarousel(-1)"
+                    >
+                        &gt;
+                    </button>
+                </div>
+            </div>
 
             <div class="carousel-container">
-                <button
-                    class="carousel-arrow left"
-                    onclick="scrollCarousel(1)"
-                >
-                    ←
-                </button>
                 <div class="carousel-wrapper">
                     <div class="carousel-track" id="carouselTrack">
                         <div class="carousel-card">추천지 1</div>
                         <div class="carousel-card">추천지 2</div>
                         <div class="carousel-card">추천지 3</div>
                         <div class="carousel-card">추천지 4</div>
-                        <div class="carousel-card">추천지 5</div>
-                        <div class="carousel-card">추천지 6</div>
                     </div>
                 </div>
-                <button
-                    class="carousel-arrow right"
-                    onclick="scrollCarousel(-1)"
-                >
-                    →
-                </button>
             </div>
         </div>
 
         <script src="./js/index.js"></script>
+
+        <template id="cardTemplate">
+            <div class="carousel-card">
+                <div class="card-content">
+                    <h3 class="card-region"></h3>
+                    <p class="card-date"></p>
+                    <p class="card-meta"></p>
+                    <p class="card-place"></p>
+                </div>
+            </div>
+        </template>
+
+        <template id="placeholderCardTemplate">
+            <div class="carousel-card placeholder-card">
+                <div class="card-content">
+                    <h4>새로운 여행</h4>
+                    <p>당일치기 여행을<br />계획해보세요!</p>
+                </div>
+            </div>
+        </template>
     </body>
 </html>
-
-

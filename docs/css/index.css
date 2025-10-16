@@ -404,6 +404,7 @@ body {
     margin-bottom: 10px;
     position: relative;
     padding-left: 20px;
+    max-width: 70%;
 }
 
 .section-title::before {
@@ -414,6 +415,11 @@ body {
     width: 5px;
     height: 50px;
     background: #BB2637;
+}
+
+.section-title-container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .carousel-container {
@@ -452,29 +458,27 @@ body {
     object-fit: cover;
 }
 
-/* style.css의 .carousel-arrow 수정 */
+/* 새로 추가하거나 수정해야 할 스타일 */
 .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px;
-    height: 60px;
+    /* 버튼이 보일 수 있도록 크기 지정 */
+    width: 40px; 
+    height: 40px;
     
-    border: none; 
-    background: transparent; 
-    
-    cursor: pointer;
+    /* 화살표 텍스트 중앙 정렬 */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3em; 
-    color: #000000; 
-    transition: all 0.3s ease;
-    z-index: 10;
-    
-    /* 💡 추가: 텍스트를 수직 중앙 정렬하기 위한 속성 */
-    line-height: 1; /* 폰트 자체의 행 높이 재설정 */
-    padding-bottom: 5px; /* 시각적으로 더 잘 맞추기 위해 약간 조정 (선택 사항) */
+    font-size: 2em; /* 화살표 크기 키우기 */
+}
+
+.arrow-container{
+    padding-right: 10px;
+}
+
+.section-title-container > div {
+    display: flex;
+    align-items: center; 
+    gap: 15px; /* 버튼 사이 간격 */
 }
 
 .carousel-arrow:hover {
@@ -506,7 +510,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
     background: #BB2637;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

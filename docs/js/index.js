@@ -1,5 +1,3 @@
-const GEMINI_API_KEY = "AIzaSyCQIdCSI51UWPVw2xZcSmB5BFXgddfi0mk"; //환경변수값으로 변경 필요 ( 테스트 api )
-
 const questions = [
     {
         id: 1,
@@ -91,7 +89,7 @@ function startGame() {
     const startScreen = document.getElementById("startScreen");
     if (startScreen) startScreen.remove();
 
-    document.getElementById("chatInput").style.display = "flex"; 
+    document.getElementById("chatInput").style.display = "flex";
 
     addBotMessage("안녕하세요! 음식 취향 분석을 시작하겠습니다. 😊");
 
@@ -193,7 +191,7 @@ function scrollToBottom() {
 }
 
 function restartGame() {
-    sessionStorage.removeItem('foodList');
+    sessionStorage.removeItem("foodList");
     location.reload();
 }
 
@@ -205,12 +203,6 @@ function restartGame() {
  * 사용자 답변 로그를 바탕으로 Gemini API에 음식 추천을 요청합니다.
  */
 async function getFoodRecommendation(answersLog) {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
-        throw new Error(
-            "API 키가 설정되지 않았거나 유효하지 않습니다. 실제 키를 입력해주세요."
-        );
-    }
-
     // 1. 답변을 프롬프트로 변환
     const prompt = `
         다음은 사용자의 음식 선호도에 대한 10가지 답변입니다:
@@ -221,49 +213,31 @@ async function getFoodRecommendation(answersLog) {
         위 답변을 바탕으로 사용자가 실제로 한국에서 구입·먹을 수 있는 음식 4개를 추천해주세요.  
         너무 생소하여 한국 내 유통/판매가 거의 없는 해외 음식(예: 특이 현지 요리, 지역 한정 메뉴 등)은 포함하지 마세요.  
 
+
         각 음식은 위키피디아에 정의되어 있는 정확한 음식명이여야 하며,  
-        추천 음식 예시: 스파게티, 순대국, 감바스 알 아히요 와 같이 원본이 되는 음식명만 사용하세요.
-        베이컨 크림 파스타 등의 바리에이션이 들어간 음식은 안됩니다.
+        추천 음식 예시: 스파게티, 순대국, 감바스 알 아히요 와 같이 원본이 되는 음식명만 사용하세요.  
+        베이컨 크림 파스타 등의 바리에이션이 들어간 음식은 안됩니다.  
         응답은 반드시 아래의 JSON 배열 구조만으로 출력하세요.  
-        다른 부가 설명 및 텍스트는 절대 추가하지 마세요.
+        다른 부가 설명 및 텍스트는 절대 추가하지 마세요.  
+
 
         [{"name": "음식1", "description": "설명1"}, {"name": "음식2", "description": "설명2"}, ...]
     `.trim();
 
-
     // 2. Gemini API 요청
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [{ text: prompt }],
-                    },
-                ],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    temperature: 0.7,
-                },
-            }),
-        }
-    );
+    const response = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+    });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.error
-            ? errorData.error.message
-            : response.statusText;
-        throw new Error(`API 요청 실패: ${response.status} - ${errorMessage}`);
+        const error = await response.json();
+        throw new Error(error.error || "API 요청 실패");
     }
 
     const data = await response.json();
 
-    // 3. 응답 파싱 및 반환
     try {
         const jsonText = data.candidates[0].content.parts[0].text;
         return JSON.parse(jsonText);
@@ -281,43 +255,46 @@ async function getFoodRecommendation(answersLog) {
  * 위키피디아 API를 사용하여 음식 이름의 대표 이미지 URL을 가져옵니다.
  */
 async function getWikipediaImageUrl(foodName) {
-    const WIKI_API_BASE = 'https://ko.wikipedia.org/w/api.php';
-    
+    const WIKI_API_BASE = "https://ko.wikipedia.org/w/api.php";
+
     // 플레이스홀더 서비스 변경 및 URL 인코딩 수정
-    const encodedFoodName = encodeURIComponent(foodName.replace(/ /g, '+'));
-    const PLACEHOLDER_URL = `https://placehold.co/200x200/f0f0f0/666666?text=${encodedFoodName}`; 
+    const encodedFoodName = encodeURIComponent(foodName.replace(/ /g, "+"));
+    const PLACEHOLDER_URL = `https://placehold.co/200x200/f0f0f0/666666?text=${encodedFoodName}`;
 
     const step1Params = new URLSearchParams({
-        action: 'query',
+        action: "query",
         titles: foodName,
-        prop: 'pageimages',
-        piprop: 'original', 
-        format: 'json',
-        redirects: 1, 
-        origin: '*', 
+        prop: "pageimages",
+        piprop: "original",
+        format: "json",
+        redirects: 1,
+        origin: "*",
     });
 
     try {
-        const step1Response = await fetch(`${WIKI_API_BASE}?${step1Params.toString()}`);
+        const step1Response = await fetch(
+            `${WIKI_API_BASE}?${step1Params.toString()}`
+        );
         if (!step1Response.ok) return PLACEHOLDER_URL;
 
         const step1Data = await step1Response.json();
         const pages = step1Data.query.pages;
         const pageId = Object.keys(pages)[0];
-        
-        if (pageId === '-1' || !pages[pageId].original || !pages[pageId].original.source) {
-            return PLACEHOLDER_URL; 
+
+        if (
+            pageId === "-1" ||
+            !pages[pageId].original ||
+            !pages[pageId].original.source
+        ) {
+            return PLACEHOLDER_URL;
         }
 
         return pages[pageId].original.source;
-
     } catch (error) {
         console.error(`Wikipedia 이미지 요청 오류 for ${foodName}:`, error);
         return PLACEHOLDER_URL;
     }
 }
-
-
 
 // =================================================================
 //                    게임 종료 및 결과 준비 함수 (수정)
@@ -338,8 +315,8 @@ async function finishGame() {
         // 로딩 메시지 제거
         removeLoadingMessage();
         // 세션스토리지에 파싱된 배열 저장 (foodListArray -> foodList)
-        const foodListArray = recommendationResults.map(item => item.name);
-        sessionStorage.setItem('foodList', JSON.stringify(foodListArray));
+        const foodListArray = recommendationResults.map((item) => item.name);
+        sessionStorage.setItem("foodList", JSON.stringify(foodListArray));
         console.log(foodListArray);
 
         // 결과 표시
@@ -348,7 +325,7 @@ async function finishGame() {
         setTimeout(async () => {
             addBotMessage("당신의 취향에 맞는 음식 추천 결과입니다:");
             // 💡 addResultCards가 async 함수이므로 await를 사용하여 이미지 로딩을 기다립니다.
-            await addResultCards(recommendationResults); 
+            await addResultCards(recommendationResults);
         }, 800);
     } catch (error) {
         console.error("API 요청 실패:", error);
@@ -382,18 +359,20 @@ async function addResultCards(results) {
 
     const cardsContainer = document.createElement("div");
     cardsContainer.className = "result-cards";
-    
+
     // 1. 모든 이미지 URL을 비동기적으로 동시에 가져와서 결과를 업데이트합니다.
-    const resultsWithImages = await Promise.all(results.map(async (result) => {
-        const imageUrl = await getWikipediaImageUrl(result.name);
-        return { ...result, imageUrl }; // imageUrl을 추가하여 반환
-    }));
+    const resultsWithImages = await Promise.all(
+        results.map(async (result) => {
+            const imageUrl = await getWikipediaImageUrl(result.name);
+            return { ...result, imageUrl }; // imageUrl을 추가하여 반환
+        })
+    );
 
     // 2. 이미지가 포함된 데이터로 최종 HTML을 구성하고 DOM에 삽입합니다.
     resultsWithImages.forEach((result) => {
         const card = document.createElement("div");
         card.className = "result-card";
-        
+
         // CSS 구조에 맞게 이미지와 텍스트를 분리하여 HTML 구성
         card.innerHTML = `
     <div class="result-card-content">
@@ -452,3 +431,52 @@ function showRestartButton() {
 
     scrollToBottom();
 }
+
+async function fetchAndRenderDayTripPlans() {
+    const carouselTrack = document.getElementById("carouselTrack");
+    const cardTemplate = document.getElementById("cardTemplate");
+    const placeholderTemplate = document.getElementById("placeholderCardTemplate");
+
+    carouselTrack.innerHTML = "";
+
+    try {
+        const response = await fetch("http://localhost:3000/plans");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const allPlans = await response.json();
+        const dayTripPlans = allPlans.filter(plan => plan.is_day_trip === true);
+
+        dayTripPlans.forEach((plan) => {
+            //true를 넣어 자식 요소까지 모두 복제
+            const cardClone = cardTemplate.content.cloneNode(true);
+
+            cardClone.querySelector(".card-region").textContent = `${plan.region} (당일치기)`;
+            cardClone.querySelector(".card-date").textContent = plan.start_date;
+            cardClone.querySelector(".card-meta").textContent = `인원: ${plan.size}명`;
+            
+            const firstPlaceName = plan.plan_items?.[0]?.places?.name || "일정 없음";
+            cardClone.querySelector(".card-place").textContent = `첫 일정: ${firstPlaceName}`;
+
+            carouselTrack.appendChild(cardClone);
+        });
+
+        // DB에 있는 is_day_trip이 TRUE인 값이 4개가 되지 않을 경우 채우는 부분
+        const placeholdersNeeded = 4 - dayTripPlans.length;
+        if (placeholdersNeeded > 0) {
+            for (let i = 0; i < placeholdersNeeded; i++) {
+                const placeholderClone = placeholderTemplate.content.cloneNode(true);
+                carouselTrack.appendChild(placeholderClone);
+            }
+        }
+
+    } catch (error) {
+        console.error("당일치기 계획 데이터를 가져오는 중 오류 발생: ", error);
+        carouselTrack.innerHTML =
+            '<div class="carousel-card">데이터 로딩 중 오류가 발생했습니다.</div>';
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchAndRenderDayTripPlans();
+});
