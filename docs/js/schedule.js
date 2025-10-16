@@ -1,69 +1,4 @@
-// 임시 여행 계획 데이터.
-// 나중에 search 페이지에서 전달받은 데이터로 수정한다.
-const plansData = {
-  start_date: "2025-10-15",
-  end_date: "2025-10-17",
-  region: "부산",
-  size: 1,
-  places: [
-    {
-      visit_date: "2025-10-15",
-      visit_time: "12:00",
-      name: "본전돼지국밥",
-      address: "부산광역시 동구 중앙대로214번길 3-8",
-      price: 1,
-      rating: 4.2,
-    },
-    {
-      visit_date: "2025-10-15",
-      visit_time: "15:00",
-      name: "원조 승기 씨앗 호떡",
-      address: "부산광역시 중구 비프광장로 36",
-      price: 0,
-      rating: 4.3,
-    },
-    {
-      visit_date: "2025-10-15",
-      visit_time: "18:00",
-      name: "자갈치시장",
-      address: "부산광역시 중구 자갈치해안로 52",
-      price: 2,
-      rating: 4.4,
-    },
-    {
-      visit_date: "2025-10-16",
-      visit_time: "13:00",
-      name: "가야밀면",
-      address: "부산광역시 부산진구 가야대로 544-1",
-      price: 1,
-      rating: 4.3,
-    },
-    {
-      visit_date: "2025-10-16",
-      visit_time: "19:00",
-      name: "문화양곱창",
-      address: "부산광역시 부산진구 가야대로784번길 62",
-      price: 3,
-      rating: 4.1,
-    },
-    {
-      visit_date: "2025-10-17",
-      visit_time: "12:30",
-      name: "수변최고돼지국밥 민락본점",
-      address: "부산광역시 수영구 광안해변로370번길 9-32",
-      price: 1,
-      rating: 4.6,
-    },
-    {
-      visit_date: "2025-10-17",
-      visit_time: "18:30",
-      name: "해운대기와집 대구탕",
-      address: "부산광역시 해운대구 달맞이길104번길 46",
-      price: 2,
-      rating: 4.6,
-    },
-  ],
-};
+let plansData = {};
 
 const headerContainer = document.querySelector("#main-header");
 const mainContainer = document.querySelector("#main-content");
@@ -306,9 +241,14 @@ const showSaveResultPopup = (isSuccess) => {
   });
 };
 
-sortPlacesByTime();
-
 const renderSchedule = () => {
+  plansDataRaw = sessionStorage.getItem("plansData");
+  if (!plansDataRaw) {
+    return;
+  }
+  plansData = JSON.parse(plansDataRaw);
+  sortPlacesByTime();
+
   let uniqueDates = getUniqueDates();
   let days = uniqueDates.length;
 
