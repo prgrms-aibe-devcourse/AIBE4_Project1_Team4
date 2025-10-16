@@ -51,7 +51,7 @@ body {
 .plan-card-meta {
   font-size: 0.875rem;
   color: #666;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .hidden {
@@ -123,15 +123,26 @@ body {
 }
 
 .review-rating .star {
-  font-size: 2rem;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  color: #ccc;
-  transition: color 0.2s;
+  transition: transform 0.2s ease-in-out;
 }
 
-.review-rating .star.selected,
-.review-rating .star:hover {
-  color: var(--color-red);
+.review-rating .star:hover,
+.review-rating .star.selected {
+  transform: scale(1.1);
+}
+
+.review-rating-display {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.review-rating-display .review-display-star {
+  width: 24px;
+  height: 24px;
 }
 
 .form-textarea {
@@ -187,7 +198,7 @@ body {
 .plan-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .red-button {
@@ -302,4 +313,33 @@ body {
   color: var(--color-red);
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.plan-card-places {
+  margin-top: 5px;
+  margin-bottom: 8px;
+  border-top: none;
+  padding-top: 5px;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.plan-card-places .places-label {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.plan-card-places .places-content {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.plan-card-meta .meta-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
 }

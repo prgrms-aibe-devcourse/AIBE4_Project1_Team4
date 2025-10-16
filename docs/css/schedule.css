@@ -38,6 +38,11 @@ body {
   padding-bottom: 75px;
 }
 
+/* 저장 중 상호작용 비활성화 */
+body.saving {
+  pointer-events: none;
+}
+
 #main-header {
   position: fixed;
   top: 0;
@@ -259,6 +264,14 @@ body {
   font-weight: 500;
 }
 
+.place-memo {
+  background-color: var(--background-grey);
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+  padding: 8px;
+}
+
 .place-actions {
   display: flex;
   flex-direction: column;
@@ -307,11 +320,7 @@ body {
   color: var(--text-primary);
   border-color: var(--border-color-input);
 }
-.place-information .edit-place-name {
-  font-size: 18px;
-  font-weight: bold;
-  font-family: "Noto Serif KR", sans-serif;
-}
+
 .rating-editor {
   display: flex;
   align-items: center;
@@ -319,7 +328,6 @@ body {
 }
 .rating-editor input {
   width: 60px;
-  font-weight: bold;
   text-align: center;
 }
 .rating-editor span {
@@ -371,4 +379,125 @@ body {
 }
 .bottom-btn:hover {
   background: var(--primary-hover-color);
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-window {
+  background-color: var(--background-light);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.popup-overlay.visible .popup-window {
+  transform: scale(1);
+}
+
+.popup-message {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 0 0 25px 0;
+  line-height: 1.5;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.popup-btn {
+  font-family: "Noto Serif KR", sans-serif;
+  flex: 1;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.popup-confirm-btn {
+  background-color: var(--primary-color);
+  color: var(--text-on-dark);
+}
+
+.popup-confirm-btn:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.popup-cancel-btn {
+  background-color: var(--background-grey);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color-light);
+}
+
+.popup-cancel-btn:hover {
+  background-color: #e9e9e9;
+}
+
+/* 로딩 스타일 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-overlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary-color);
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

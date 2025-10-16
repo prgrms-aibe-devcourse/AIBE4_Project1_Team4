@@ -34,7 +34,7 @@ async function fetchPlans() {
 
 const renderPlans = (plansData) => {
   if (!planGrid) return;
-  planGrid.innerHTML = ""; // 기존 내용 초기화
+  planGrid.innerHTML = "";
 
   plansData.forEach((plan) => {
     const isDayTrip = plan.start_date === plan.end_date;
@@ -42,24 +42,60 @@ const renderPlans = (plansData) => {
       ? "당일치기"
       : `${plan.start_date} ~ ${plan.end_date}`;
 
-    const cardTitle = `${plan.region} (${isDayTrip ? "당일" : "다일정"})`;
+    const mainPlacesNames = plan.plan_items
+      .map((item) => {
+        let placeData = item.places;
+        if (Array.isArray(placeData) && placeData.length > 0) {
+          placeData = placeData[0];
+        }
+        return placeData && placeData.name ? placeData.name : null;
+      })
+      .filter((name) => name)
+      .slice(0, 5)
+      .join(", ");
+
+    const mainPlacesText =
+      mainPlacesNames.length > 0
+        ? `방문 장소: ${mainPlacesNames}`
+        : `방문 장소: (장소 정보 없음)`;
+
+    const mainPlacesContent =
+      mainPlacesNames.length > 0 ? mainPlacesNames : `(장소 정보 없음)`;
+
+    const cardTitle = `${plan.region} 여행 (${isDayTrip ? "당일" : "다일정"})`;
 
     const cardHtml = `
           <div class="plan-card">
             <div class="plan-card-body">
               <h3 class="plan-card-title">${cardTitle}</h3> 
               <p class="plan-card-meta">
-                🗓️ 기간: ${durationText}
+                <img src="img/icon/icon-calendar.png" alt="기간" class="meta-icon" /> 기간: ${durationText}
               </p>
               <p class="plan-card-meta">
-                📍 지역: ${plan.region} 
+                <img src="img/icon/icon-location.png" alt="지역" class="meta-icon" /> 지역: ${
+                  plan.region
+                }
                 <span style="color: ${
                   isDayTrip ? "#555" : "#BB2637"
                 }; font-weight: 500;">
                   
                 </span>
               </p>
-              <p class="plan-card-meta">👨‍👩‍👧‍👦 인원: ${plan.size}명</p>
+              <p class="plan-card-meta">
+                <img src="img/icon/icon-user.png" alt="인원" class="meta-icon" /> 인원: ${
+                  plan.size
+                }명
+              </p></p>
+
+              <div class="plan-card-places"> 
+                  <span class="places-label">방문 장소 : </span>
+                  <span class="places-content">${mainPlacesContent}</span>
+              </div>
+              
+              <div class="plan-card-places"> 
+                  <span class="places-label">방문 장소: </span>
+                  <span class="places-content">${mainPlacesContent}</span>
+              </div>
               
               <div class="plan-actions">
                   <button 
@@ -188,9 +224,9 @@ reviewRatingStars.forEach((star) => {
 function highlightStars(rating) {
   reviewRatingStars.forEach((star) => {
     if (parseInt(star.dataset.rating) <= rating) {
-      star.classList.add("selected");
+      star.src = "img/icon/icon-fork-red.png";
     } else {
-      star.classList.remove("selected");
+      star.src = "img/icon/icon-fork-gray.png";
     }
   });
 }
@@ -250,9 +286,12 @@ function renderReviewCards(reviews) {
   const reviewCardsHtml = reviews
     .map((review) => {
       const rating = review.review_rating || 0;
-      const fullStars = "★".repeat(rating);
-      const emptyStars = "☆".repeat(5 - rating);
-      const starsHtml = fullStars + emptyStars;
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        starsHtml += `<img src="img/icon/icon-fork-${
+          i <= rating ? "red" : "gray"
+        }.png" class="review-display-star" alt="${i}점" />`;
+      }
 
       const date = new Date(review.created_at);
       const dateString = date.toLocaleDateString("ko-KR", {

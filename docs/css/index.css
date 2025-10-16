@@ -1,3 +1,23 @@
+@import url("https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap");
+
+:root {
+  --primary-color: #bb2637;
+  --primary-hover-color: #a91d2b;
+
+  --text-primary: #000000;
+  --text-secondary: #666;
+  --text-on-dark: #ffffff;
+
+  --background-light: #ffffff;
+  --background-grey-light: #f8f8f8;
+  --background-grey: #f6f6f6;
+  --background-dark: #000000;
+
+  --border-color-light: #e0e0e0;
+  --border-color-input: #ddd;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -226,9 +246,9 @@ body {
 }
 
 .btn-yes:hover {
-    background: #BB2637;
+    background: var(--primary-color);
     color: white;
-    border-color: #BB2637;
+    border-color: var(--primary-color);
 }
 
 .btn-no:hover {
@@ -243,29 +263,29 @@ body {
 }
 
 .btn-start {
-    background: #BB2637;
+    background: var(--primary-color);
     color: white;
-    border-color: #BB2637;
+    border-color: var(--primary-color);
     padding: 12px 40px;
     font-size: 1.1em;
 }
 
 .btn-start:hover {
-    background: #750000;
-    border-color: #750000;
+    background: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
 }
 
 .btn-movePage {
-    background: #BB2637;
+    background: var(--primary-color);
     color: white;
-    border-color: #BB2637;
+    border-color: var(--primary-color);
     padding: 12px 40px;
     font-size: 1.1em;
 }
 
 .btn-movePage:hover {
-    background: #750000;
-    border-color: #750000;
+    background: var(--primary-hover-color);
+    border-color: var(--primary-hover-color);
 }
 
 
@@ -282,7 +302,7 @@ body {
     background: white;
     width: 200px; /* max-width 대신 width로 고정 */
     height: 220px; /* max-height 대신 height로 고정 */
-    border: 2px solid #BB2637;
+    border: 2px solid var(--primary-color);
     border-radius: 8px;
     
     /* 내부 콘텐츠(이미지, 텍스트) 정렬을 위해 flexbox를 사용합니다. */
@@ -333,7 +353,7 @@ body {
 
 /* 기존 h3, p 태그 스타일은 그대로 두거나 필요에 맞게 수정합니다. */
 .result-card h3 {
-    color: #BB2637;
+    color: var(--primary-color);
     font-size: 1.1em;
     margin-bottom: 5px;
 }
@@ -414,7 +434,7 @@ body {
     top: 0;
     width: 5px;
     height: 50px;
-    background: #BB2637;
+    background: var(--primary-color);
 }
 
 .section-title-container {
@@ -487,9 +507,9 @@ body {
 }
 
 .carousel-arrow:hover {
-    background: #BB2637;
+    background: var(--primary-color);
     color: white;
-    border-color: #BB2637;
+    border-color: var(--primary-color);
 }
 
 .carousel-arrow.left {
@@ -509,10 +529,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #BB2637;
-    border-radius: 2px;
+    background: var(--primary-color);
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #750000;
+    background: var(--primary-hover-color);
 }
