@@ -123,7 +123,7 @@ app.post("/schedule", async (req, res) => {
       }
       console.log(`plan_items 테이블 저장 성공: ${place.name} 항목 연결 완료`);
     }
-    res.status(201).json();
+    res.status(201).json({ plan_id });
   } catch (error) {
     console.error("저장 중 오류 발생:", error.message);
     res.status(500).json({ error: error.message });

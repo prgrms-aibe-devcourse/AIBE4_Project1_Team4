@@ -70,9 +70,10 @@ const mainContainer = document.querySelector("#main-content");
 const footerContainer = document.querySelector("#main-footer");
 const popupContainer = document.querySelector("#popup-container");
 const loadingOverlay = document.querySelector("#loading-overlay");
-// 배포할 때는 서버 주소를 변경한다.
+// 배포할 때는 서버와 클라이언트 주소를 변경한다.
 const serverUrl = "http://localhost:3000";
 let currentDay = 1;
+let lastSavedPlanId = null;
 
 const getUniqueDates = () => {
   const dates = [...new Set(plansData.places.map((place) => place.visit_date))];
@@ -117,7 +118,6 @@ const autoCorrectTime = (timeStr) => {
 };
 
 const hidePopup = () => {
-  console.log("hidepopup");
   const overlay = popupContainer.querySelector(".popup-overlay");
   if (overlay) {
     overlay.classList.remove("visible");
@@ -218,6 +218,9 @@ const savePlan = async () => {
       throw new Error("서버에서 에러가 발생했습니다.");
     }
 
+    const result = await response.json();
+    lastSavedPlanId = result.plan_id;
+
     console.log("계획 저장 성공");
     showSaveResultPopup(true);
   } catch (error) {
@@ -278,14 +281,27 @@ const showSaveResultPopup = (isSuccess) => {
   `;
 
   const overlay = popupContainer.querySelector(".popup-overlay");
-  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  const closePopup = () => {
+    overlay.classList.remove("visible");
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+        if (isSuccess && lastSavedPlanId) {
+          window.location.href = "detail.html";
+        }
+      },
+      { once: true }
+    );
+  };
 
   popupContainer
     .querySelector(".popup-confirm-btn")
-    .addEventListener("click", hidePopup);
+    .addEventListener("click", closePopup);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
-      hidePopup();
+      closePopup();
     }
   });
 };
