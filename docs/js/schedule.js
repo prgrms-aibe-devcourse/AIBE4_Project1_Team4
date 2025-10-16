@@ -68,7 +68,12 @@ const plansData = {
 const headerContainer = document.querySelector("#main-header");
 const mainContainer = document.querySelector("#main-content");
 const footerContainer = document.querySelector("#main-footer");
+const popupContainer = document.querySelector("#popup-container");
+const loadingOverlay = document.querySelector("#loading-overlay");
+// 배포할 때는 서버와 클라이언트 주소를 변경한다.
+const serverUrl = "http://localhost:3000";
 let currentDay = 1;
+let lastSavedPlanId = null;
 
 const getUniqueDates = () => {
   const dates = [...new Set(plansData.places.map((place) => place.visit_date))];
@@ -112,11 +117,201 @@ const autoCorrectTime = (timeStr) => {
   return "12:00";
 };
 
-let uniqueDates = getUniqueDates();
-let days = uniqueDates.length;
+const hidePopup = () => {
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  if (overlay) {
+    overlay.classList.remove("visible");
+    // 전환이 끝난 후 팝업창 내용을 지운다.
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+      },
+      { once: true }
+    );
+  }
+};
+
+const showDeletePopup = (place, index) => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">'${place.name}'<br>이 일정을 삭제하시겠습니까?</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+
+  // CSS 전환을 위해 잠시 후에 팝업창을 띄운다.
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", () => {
+      plansData.places.splice(index, 1);
+      hidePopup();
+      renderSchedule();
+    });
+
+  const cancelAction = () => hidePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
+};
+
+const showDeleteRestrictionPopup = () => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">일정은 최소 1개 이상 필요합니다.</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  const cancelAction = () => hidePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
+};
+
+const showLoading = () => {
+  document.body.classList.add("saving");
+  loadingOverlay.classList.add("visible");
+};
+
+const hideLoading = () => {
+  document.body.classList.remove("saving");
+  loadingOverlay.classList.remove("visible");
+};
+
+const savePlan = async () => {
+  showLoading();
+  try {
+    const response = await fetch(`${serverUrl}/schedule`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(plansData),
+    });
+
+    if (!response.ok) {
+      throw new Error("서버에서 에러가 발생했습니다.");
+    }
+
+    const result = await response.json();
+    lastSavedPlanId = result.plan_id;
+
+    console.log("계획 저장 성공");
+    showSaveResultPopup(true);
+  } catch (error) {
+    console.error("계획 저장 실패: ", error);
+    showSaveResultPopup(false);
+  } finally {
+    hideLoading();
+  }
+};
+
+const showSaveConfirmPopup = () => {
+  popupContainer.innerHTML = `
+    <div class="popup-overlay">
+      <div class="popup-window">
+        <p class="popup-message">이 일정으로 저장하시겠습니까?</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-cancel-btn">취소</button>
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  setTimeout(() => overlay.classList.add("visible"), 10);
+
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", () => {
+      hidePopup();
+      savePlan();
+    });
+
+  const cancelAction = () => hidePopup();
+  popupContainer
+    .querySelector(".popup-cancel-btn")
+    .addEventListener("click", cancelAction);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      cancelAction();
+    }
+  });
+};
+
+const showSaveResultPopup = (isSuccess) => {
+  const message = isSuccess
+    ? "저장이 완료되었습니다."
+    : "저장에 실패했습니다. 다시 시도해주세요.";
+
+  popupContainer.innerHTML = `
+    <div class="popup-overlay visible">
+      <div class="popup-window">
+        <p class="popup-message">${message}</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const overlay = popupContainer.querySelector(".popup-overlay");
+
+  const closePopup = () => {
+    overlay.classList.remove("visible");
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+        if (isSuccess && lastSavedPlanId) {
+          window.location.href = "detail.html";
+        }
+      },
+      { once: true }
+    );
+  };
+
+  popupContainer
+    .querySelector(".popup-confirm-btn")
+    .addEventListener("click", closePopup);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closePopup();
+    }
+  });
+};
+
 sortPlacesByTime();
 
 const renderSchedule = () => {
+  let uniqueDates = getUniqueDates();
+  let days = uniqueDates.length;
+
   headerContainer.innerHTML = "";
   mainContainer.innerHTML = "";
   footerContainer.innerHTML = "";
@@ -168,6 +363,10 @@ const renderSchedule = () => {
       return;
     }
 
+    if (!("memo" in place)) {
+      place.memo = "";
+    }
+
     const placeDiv = document.createElement("div");
     placeDiv.className = "place";
     placeDiv.setAttribute("data-id", index);
@@ -199,6 +398,9 @@ const renderSchedule = () => {
                     <button class="price-option" data-value="3">$$$$</button>
                     <button class="price-option" data-value="4">$$$$$</button>
                 </div>
+                <input type="text" class="edit-memo" value="${
+                  place.memo
+                }" placeholder="메모를 입력하세요." maxlength="100">
             </div>
             <div class="place-actions">
                 <div class="action-buttons">
@@ -245,6 +447,8 @@ const renderSchedule = () => {
           priceSelector.dataset.price,
           10
         );
+        plansData.places[index].memo =
+          placeDiv.querySelector(".edit-memo").value;
 
         delete plansData.places[index].isEditing;
         sortPlacesByTime();
@@ -281,12 +485,17 @@ const renderSchedule = () => {
             <div class="price-info">
                 <span class="price-indicator">${priceSymbol}</span>
             </div>
+            ${
+              place.memo === ""
+                ? ""
+                : `<span class="place-memo">${place.memo}</span>`
+            }
             </div>
-            <div class="place-actions">
-            <div class="action-buttons">
-                <button class="edit-btn"><img src="./img/icon/icon-pencil.png" width=24px/></button>
-                <button class="delete-btn"><img src="./img/icon/icon-trashcan.png" width=24px/></button>
-            </div>
+              <div class="place-actions">
+              <div class="action-buttons">
+                  <button class="edit-btn"><img src="./img/icon/icon-pencil.png" width=24px/></button>
+                  <button class="delete-btn"><img src="./img/icon/icon-trashcan.png" width=24px/></button>
+              </div>
             </div>
         </div>
       `;
@@ -295,6 +504,15 @@ const renderSchedule = () => {
         plansData.places.forEach((p) => delete p.isEditing);
         plansData.places[index].isEditing = true;
         renderSchedule();
+      });
+
+      placeDiv.querySelector(".delete-btn").addEventListener("click", () => {
+        // 각 날짜마다 최소 1개의 일정은 가지도록 한다.
+        if (currentDayPlaces.length > 1) {
+          showDeletePopup(place, index);
+        } else {
+          showDeleteRestrictionPopup();
+        }
       });
     }
 
@@ -307,6 +525,10 @@ const renderSchedule = () => {
   const bottomActions = document.createElement("div");
   bottomActions.className = "bottom-actions";
   bottomActions.innerHTML = `<button class="bottom-btn">계획 저장</button>`;
+
+  bottomActions
+    .querySelector(".bottom-btn")
+    .addEventListener("click", showSaveConfirmPopup);
   footerContainer.appendChild(bottomActions);
 };
 

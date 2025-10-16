@@ -80,6 +80,67 @@ app.get("/reviews/:planId", async (req, res) => {
 
   res.json(data);
 });
+
+app.post("/schedule", async (req, res) => {
+  const plansData = req.body;
+  try {
+    const { start_date, end_date, region, size } = plansData;
+    const plansObj = {
+      start_date,
+      end_date,
+      region,
+      size,
+      created_at: new Date().toISOString(),
+    };
+    const { data: newPlan, error: planError } = await supabase
+      .from("plans")
+      .insert(plansObj)
+      .select()
+      .single();
+    if (planError) {
+      throw planError;
+    }
+    const plan_id = newPlan.plan_id;
+    console.log("plans 테이블 저장 성공, plan_id:", plan_id);
+
+    for (const place of plansData.places) {
+      const { name, address, price, rating } = place;
+      const placeObj = { name, address, price, rating };
+      const { data: newPlace, error: placeError } = await supabase
+        .from("places")
+        .insert(placeObj)
+        .select()
+        .single();
+      if (placeError) {
+        throw placeError;
+      }
+      const place_id = newPlace.place_id;
+      console.log("places 테이블 저장 성공, place_id:", place_id);
+
+      // 여행 계획이 KST 시간이라 가정하고 UTC timestampz 시간으로 변환한다.
+      const combinedDateTime = `${place.visit_date}T${place.visit_time}:00`;
+      const visit_datetime = new Date(combinedDateTime).toISOString();
+      const planItemObj = {
+        plan_id,
+        place_id,
+        visit_datetime,
+        memo: place.memo,
+      };
+      const { error: itemError } = await supabase
+        .from("plan_items")
+        .insert(planItemObj);
+      if (itemError) {
+        throw itemError;
+      }
+      console.log(`plan_items 테이블 저장 성공: ${place.name} 항목 연결 완료`);
+    }
+    res.status(201).json({ plan_id });
+  } catch (error) {
+    console.error("저장 중 오류 발생:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
