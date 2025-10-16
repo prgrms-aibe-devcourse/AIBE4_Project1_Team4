@@ -123,15 +123,26 @@ body {
 }
 
 .review-rating .star {
-  font-size: 2rem;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  color: #ccc;
-  transition: color 0.2s;
+  transition: transform 0.2s ease-in-out;
 }
 
-.review-rating .star.selected,
-.review-rating .star:hover {
-  color: var(--color-red);
+.review-rating .star:hover,
+.review-rating .star.selected {
+  transform: scale(1.1);
+}
+
+.review-rating-display {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.review-rating-display .review-display-star {
+  width: 24px;
+  height: 24px;
 }
 
 .form-textarea {
