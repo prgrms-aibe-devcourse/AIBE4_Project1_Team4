@@ -69,6 +69,9 @@ const headerContainer = document.querySelector("#main-header");
 const mainContainer = document.querySelector("#main-content");
 const footerContainer = document.querySelector("#main-footer");
 const popupContainer = document.querySelector("#popup-container");
+const loadingOverlay = document.querySelector("#loading-overlay");
+// 배포할 때는 서버 주소를 변경한다.
+const serverUrl = "http://localhost:3000";
 let currentDay = 1;
 
 const getUniqueDates = () => {
@@ -134,11 +137,11 @@ const showDeletePopup = (place, index) => {
     .querySelector(".popup-confirm-btn")
     .addEventListener("click", () => {
       plansData.places.splice(index, 1);
-      hideDeletePopup();
+      hidePopup();
       renderSchedule();
     });
 
-  const cancelAction = () => hideDeletePopup();
+  const cancelAction = () => hidePopup();
   popupContainer
     .querySelector(".popup-cancel-btn")
     .addEventListener("click", cancelAction);
@@ -165,7 +168,7 @@ const showDeleteRestrictionPopup = () => {
   // CSS 전환을 위해 잠시 후에 팝업창을 띄운다.
   setTimeout(() => overlay.classList.add("visible"), 10);
 
-  const cancelAction = () => hideDeletePopup();
+  const cancelAction = () => hidePopup();
   popupContainer
     .querySelector(".popup-cancel-btn")
     .addEventListener("click", cancelAction);
@@ -176,7 +179,7 @@ const showDeleteRestrictionPopup = () => {
   });
 };
 
-const hideDeletePopup = () => {
+const hidePopup = () => {
   const overlay = popupContainer.querySelector(".popup-overlay");
   if (overlay) {
     overlay.classList.remove("visible");
@@ -189,6 +192,54 @@ const hideDeletePopup = () => {
       { once: true }
     );
   }
+};
+
+const showLoading = () => {
+  document.body.classList.add("saving");
+  loadingOverlay.classList.add("visible");
+};
+
+const hideLoading = () => {
+  document.body.classList.remove("saving");
+  loadingOverlay.classList.remove("visible");
+};
+
+const showSaveResultPopup = (isSuccess) => {
+  const message = isSuccess
+    ? "저장이 완료되었습니다."
+    : "저장에 실패했습니다. 다시 시도해주세요.";
+
+  popupContainer.innerHTML = `
+    <div class="popup-overlay visible">
+      <div class="popup-window">
+        <p class="popup-message">${message}</p>
+        <div class="popup-buttons">
+          <button class="popup-btn popup-confirm-btn">확인</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const overlay = popupContainer.querySelector(".popup-overlay");
+  const confirmBtn = popupContainer.querySelector(".popup-confirm-btn");
+
+  const closePopup = () => {
+    overlay.classList.remove("visible");
+    overlay.addEventListener(
+      "transitionend",
+      () => {
+        popupContainer.innerHTML = "";
+      },
+      { once: true }
+    );
+  };
+
+  confirmBtn.addEventListener("click", closePopup);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closePopup();
+    }
+  });
 };
 
 sortPlacesByTime();
@@ -248,6 +299,10 @@ const renderSchedule = () => {
       return;
     }
 
+    if (!("memo" in place)) {
+      place.memo = "";
+    }
+
     const placeDiv = document.createElement("div");
     placeDiv.className = "place";
     placeDiv.setAttribute("data-id", index);
@@ -280,7 +335,7 @@ const renderSchedule = () => {
                     <button class="price-option" data-value="4">$$$$$</button>
                 </div>
                 <input type="text" class="edit-memo" value="${
-                  "memo" in place && place.memo !== "" ? place.memo : ""
+                  place.memo
                 }" placeholder="메모를 입력하세요." maxlength="100">
             </div>
             <div class="place-actions">
@@ -367,9 +422,9 @@ const renderSchedule = () => {
                 <span class="price-indicator">${priceSymbol}</span>
             </div>
             ${
-              "memo" in place && place.memo !== ""
-                ? `<span class="place-memo">${place.memo}</span>`
-                : ""
+              place.memo === ""
+                ? ""
+                : `<span class="place-memo">${place.memo}</span>`
             }
             </div>
               <div class="place-actions">
@@ -391,7 +446,6 @@ const renderSchedule = () => {
         // 각 날짜마다 최소 1개의 일정은 가지도록 한다.
         if (currentDayPlaces.length > 1) {
           showDeletePopup(place, index);
-          showPopup(true);
         } else {
           showDeleteRestrictionPopup();
         }
@@ -407,6 +461,33 @@ const renderSchedule = () => {
   const bottomActions = document.createElement("div");
   bottomActions.className = "bottom-actions";
   bottomActions.innerHTML = `<button class="bottom-btn">계획 저장</button>`;
+
+  bottomActions
+    .querySelector(".bottom-btn")
+    .addEventListener("click", async () => {
+      showLoading();
+      try {
+        const response = await fetch(`${serverUrl}/schedule`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(plansData),
+        });
+
+        if (!response.ok) {
+          throw new Error("서버에서 에러가 발생했습니다.");
+        }
+
+        console.log("계획 저장 성공");
+        showSaveResultPopup(true); // 성공 팝업
+      } catch (error) {
+        console.error("계획 저장 실패: ", error);
+        showSaveResultPopup(false); // 실패 팝업
+      } finally {
+        hideLoading(); // 로딩 종료
+      }
+    });
   footerContainer.appendChild(bottomActions);
 };
 
