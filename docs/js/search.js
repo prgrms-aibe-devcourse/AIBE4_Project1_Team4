@@ -1,6 +1,6 @@
 // --- API 관련 변수 ---
-      const GEMINI_API_KEY = "AIzaSyCyurgOODnY2koKUDFL9GoyM9iAjv7BZWo"; // 중요: 여기에 본인의 Gemini API 키를 입력하세요.
-      const GOOGLE_MAPS_API_KEY = "AIzaSyAzIcltQOPhxMKFuALbUXC6nDx4kPVUeGs"; // 중요: 여기에 본인의 Google Maps API 키를 입력하세요.
+      const GEMINI_API_KEY = ""; // 중요: 여기에 본인의 Gemini API 키를 입력하세요.
+      const GOOGLE_MAPS_API_KEY = ""; // 중요: 여기에 본인의 Google Maps API 키를 입력하세요.
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
 
       // --- 지도 관련 전역 변수 ---
