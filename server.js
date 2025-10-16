@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require('path');
 const { createClient } = require("@supabase/supabase-js");
 const { GoogleGenAI } = require("@google/genai");
 
@@ -15,10 +16,6 @@ const port = 3000;
 
 app.use(cors()); 
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("bye");
-});
 
 app.get("/plans", async (req, res) => {
   const { data, error } = await supabase.from("plans").select(`
@@ -139,6 +136,51 @@ app.post("/schedule", async (req, res) => {
     console.error("저장 중 오류 발생:", error.message);
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post('/api/gemini', async (req, res) => {
+  const prompt = req.body.prompt;
+  if (!prompt) {
+    return res.status(400).json({ error: '프롬프트가 필요합니다.' });
+  }
+
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
+    return res.status(500).json({ error: '서버에 API 키가 설정되어 있지 않습니다.' });
+  }
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: 'application/json', temperature: 0.7 },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const message = errorData.error?.message || response.statusText;
+      return res.status(response.status).json({ error: `API 요청 실패: ${message}` });
+    }
+
+    const data = await response.json();
+    res.json(data);
+
+  } catch (error) {
+    console.error('Gemini API 호출 오류:', error);
+    res.status(500).json({ error: '서버 내부 오류' });
+  }
+});
+
+app.use(express.static(path.join(__dirname, 'docs')));
+// 루트 요청이 오면 index.html 보내기
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'docs', 'index.html'));
 });
 
 app.listen(port, () => {
