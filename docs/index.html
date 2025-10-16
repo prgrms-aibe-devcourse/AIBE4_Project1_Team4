@@ -7,11 +7,19 @@
         <link rel="stylesheet" href="./css/index.css" />
     </head>
     <body>
-        <div class="top-nav">
-            <div class="logo-container">
-                <span style="font-size: 0.9em; color: #999">로고 이미지</span>
+        <div class="top-nav-container">
+            <div class="top-nav">
+                <div class="logo-container">
+                    <span class="logo">
+                        <img src="./img/index-logo.png">
+                    </span>
+                </div>
+                <div class="nav-box">
+                    <a href="search.html" class="nav-btn">search</a>
+                    <a href="schedule.html" class="nav-btn">schedule</a>
+                    <a href="detail.html" class="nav-btn">detail</a>
+                </div>
             </div>
-            <a href="navigation.html" class="nav-btn">네비게이션 바</a>
         </div>
 
         <div class="hero-section">
@@ -68,7 +76,7 @@
             <div class="carousel-container">
                 <button
                     class="carousel-arrow left"
-                    onclick="scrollCarousel(-1)"
+                    onclick="scrollCarousel(1)"
                 >
                     ←
                 </button>
@@ -84,7 +92,7 @@
                 </div>
                 <button
                     class="carousel-arrow right"
-                    onclick="scrollCarousel(1)"
+                    onclick="scrollCarousel(-1)"
                 >
                     →
                 </button>
