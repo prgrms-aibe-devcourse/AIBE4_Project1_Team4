@@ -365,13 +365,11 @@ main {
 .footer-container {
     background-color: var(--color-white); 
     border-top: 1px solid #e0e0e0;
-    padding: 30px 20px;
+    padding: 30px 0;
     margin-top: 40px; 
 }
 
 .footer-content {
-    max-width: 1300px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
