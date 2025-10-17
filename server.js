@@ -183,6 +183,42 @@ app.post("/api/gemini", async (req, res) => {
   }
 });
 
+app.post("/api/recommend", async (req, res) => {
+  const payload = req.body.payload;
+
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
+    return res
+      .status(500)
+      .json({ error: "서버에 API 키가 설정되어 있지 않습니다." });
+  }
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const message = errorData.error?.message || response.statusText;
+      return res
+        .status(response.status)
+        .json({ error: `API 요청 실패: ${message}` });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Gemini API 호출 오류:", error);
+    res.status(500).json({ error: "서버 내부 오류" });
+  }
+});
+
 app.use(express.static(path.join(__dirname, "docs")));
 // 루트 요청이 오면 index.html 보내기
 app.get("/", (req, res) => {

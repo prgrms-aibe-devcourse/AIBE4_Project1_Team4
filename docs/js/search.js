@@ -2,8 +2,7 @@
 const serverUrl = "http://localhost:3000";
 
 const searchBtn = document.getElementById("searchBtn");
-const loadingIndicator = document.getElementById("loading");
-// const loadingOverlay = document.getElementById("loadingOverlay");
+const loadingOverlay = document.getElementById("loadingOverlay");
 const suggestWrapper = document.getElementById("suggestWrapper");
 const decreaseBtn = document.getElementById("decreaseBtn");
 const increaseBtn = document.getElementById("increaseBtn");
@@ -75,8 +74,7 @@ searchBtn.addEventListener("click", async () => {
     number_of_people: parseInt(peopleCount, 10),
     sight: includeSightseeing,
   };
-  loadingIndicator.style.display = "flex";
-  // loadingOverlay.style.display = "flex";
+  loadingOverlay.style.display = "flex";
   suggestWrapper.style.display = "none";
   try {
     const prompt = `
@@ -143,10 +141,10 @@ searchBtn.addEventListener("click", async () => {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig,
     };
-    const response = await fetch(`${serverUrl}/api/gemini`, {
+    const response = await fetch(`${serverUrl}/api/recommend`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ payload }),
     });
     if (!response.ok) throw new Error(`API 호출 실패: ${response.statusText}`);
     const result = await response.json();
@@ -164,10 +162,8 @@ searchBtn.addEventListener("click", async () => {
   } catch (error) {
     console.error("Error:", error);
     alert(`여행 계획 생성 중 오류가 발생했습니다: ${error.message}`);
-  } finally {
-    loadingIndicator.style.display = "none";
   }
-  // loadingOverlay.style.display = "none";
+  loadingOverlay.style.display = "none";
 });
 
 let tempPlans = [];
@@ -660,10 +656,10 @@ async function requestAdditionalPlaces(
     generationConfig,
   };
 
-  const response = await fetch("/api/recommend", {
+  const response = await fetch(`${serverUrl}/api/recommend`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ payload }),
   });
 
   if (!response.ok)
