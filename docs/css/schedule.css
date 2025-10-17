@@ -74,24 +74,36 @@ body.saving {
   background-color: var(--background-light);
 }
 
-.trip-header {
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: var(--background-light);
-  color: var(--text-primary);
+  padding: 10px 20px;
+}
+
+.site-logo img {
+  height: 100px;
+  display: block;
+}
+
+.trip-header {
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .trip-header h1 {
   color: var(--text-primary);
   font-size: 24px;
   font-weight: bold;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
 }
 
 .trip-meta {
   display: flex;
-  gap: 15px;
+  gap: 5px;
   color: var(--text-secondary);
   font-size: 14px;
   align-items: center;
@@ -107,6 +119,7 @@ body.saving {
   display: flex;
   justify-content: center;
   gap: 16px;
+  margin-top: 15px;
   margin-bottom: 30px;
   border-bottom: none;
   padding: 10px 0;

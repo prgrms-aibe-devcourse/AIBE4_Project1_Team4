@@ -256,15 +256,34 @@ const renderSchedule = () => {
   mainContainer.innerHTML = "";
   footerContainer.innerHTML = "";
 
+  // 로고와 기존 헤더를 감싸는 wrapper 생성
+  const headerWrapper = document.createElement("div");
+  headerWrapper.className = "header-wrapper";
+
+  // 로고 링크 생성 (클릭 시 index.html로 이동)
+  const logoLink = document.createElement("a");
+  logoLink.href = "index.html";
+  logoLink.className = "site-logo";
+  logoLink.innerHTML = `<img src="./img/index-logo.png" alt="사이트 로고">`;
+
   const headerDiv = document.createElement("div");
   headerDiv.className = "trip-header";
   headerDiv.innerHTML = `
     <h1>${plansData.region}</h1>
     <div class="trip-meta">
+      <img src="./img/icon/icon-calendar.png" width=18px>
        <span class="trip-dates">${plansData.start_date} ~ ${plansData.end_date}</span>
+       <img src="./img/icon/icon-user.png" width=24px>
+       <span class="trip-dates">${plansData.size}명</span>
     </div>
   `;
-  headerContainer.appendChild(headerDiv);
+
+  // wrapper에 로고와 헤더 추가
+  headerWrapper.appendChild(logoLink);
+  headerWrapper.appendChild(headerDiv);
+
+  // 최종적으로 headerContainer에 wrapper 추가
+  headerContainer.appendChild(headerWrapper);
 
   const mainContentWrapper = document.createElement("div");
   mainContentWrapper.className = "schedule-container";
@@ -284,13 +303,13 @@ const renderSchedule = () => {
   mainContentWrapper.appendChild(dayTabs);
 
   // Google Map API와 연동하여 지도와 경로를 시각화하는 작업은 나중에 진행한다.
-  const currentDayPlaces = plansData.places.filter(
-    (place) => getDayNumber(place.visit_date) === currentDay
-  );
-  const mapDiv = document.createElement("div");
-  mapDiv.className = "map-container";
-  mapDiv.innerHTML = `<div class="map-placeholder">${currentDayPlaces.length}개 장소</div>`;
-  mainContentWrapper.appendChild(mapDiv);
+  // const currentDayPlaces = plansData.places.filter(
+  //   (place) => getDayNumber(place.visit_date) === currentDay
+  // );
+  // const mapDiv = document.createElement("div");
+  // mapDiv.className = "map-container";
+  // mapDiv.innerHTML = `<div class="map-placeholder">${currentDayPlaces.length}개 장소</div>`;
+  // mainContentWrapper.appendChild(mapDiv);
 
   const sectionTitle = document.createElement("div");
   sectionTitle.className = "section-title";
