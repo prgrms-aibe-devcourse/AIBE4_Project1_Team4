@@ -36,6 +36,65 @@ app.get("/plans", async (req, res) => {
   res.json(data);
 });
 
+app.get("/indexCards", async (req, res) => {
+    // is_day_trip이 TRUE인 계획만 가져오도록 필터링
+    const { data, error } = await supabase.from("plans")
+        .select(`
+            plan_id,
+            start_date,
+            end_date,
+            size,
+            region,
+            is_day_trip,
+            plan_items (
+                visit_datetime,
+                places (
+                    name,
+                    address,
+                    price,
+                    rating
+                )
+            )
+        `)
+        .eq('is_day_trip', true);
+
+    if (error) {
+        console.error("Supabase Error in /indexCards:", error.message);
+        return res.status(500).json({ error: error.message });
+    }
+
+    // 세션에 저장되는 형식은 여기서
+    const formattedData = data.map(plan => {
+        const places = plan.plan_items.map(item => {
+            // visit_datetime을 visit_date (date)와 visit_time (HH:MM)로 쪼갬
+            const dateObj = new Date(item.visit_datetime);
+            const visitDate = item.visit_datetime.split('T')[0];
+            const visitTime = dateObj.toTimeString().substring(0, 5);
+
+            return {
+                visit_date: visitDate,
+                visit_time: visitTime,
+                name: item.places.name,
+                address: item.places.address,
+                price: item.places.price,
+                rating: item.places.rating,
+            };
+        });
+
+        // plan_id는 클릭 이벤트를 위해 포함시켰음
+        return {
+            plan_id: plan.plan_id, 
+            start_date: plan.start_date,
+            end_date: plan.end_date,
+            region: plan.region,
+            size: plan.size,
+            places: places
+        };
+    });
+
+    res.json(formattedData);
+});
+
 app.post("/reviews", async (req, res) => {
   console.log("클라이언트로부터 받은 리뷰 데이터:", req.body);
   const { plan_id, review_rating, review } = req.body;
