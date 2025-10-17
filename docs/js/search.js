@@ -1,7 +1,3 @@
-// --- API 관련 변수 ---
-const GEMINI_API_KEY = ""; // 중요: 여기에 본인의 Gemini API 키를 입력하세요.
-const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
-
 const searchBtn = document.getElementById("searchBtn");
 const loadingIndicator = document.getElementById("loading");
 const suggestWrapper = document.getElementById("suggestWrapper");
@@ -19,8 +15,33 @@ decreaseBtn.addEventListener("click", () => {
     peopleCountInput.value = currentValue - 1;
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const storedPlansRaw = sessionStorage.getItem("tempPlans");
+  if (storedPlansRaw) {
+    try {
+      const storedPlans = JSON.parse(storedPlansRaw);
+      if (Array.isArray(storedPlans) && storedPlans.length > 0) {
+        displayPlans(storedPlans);
+      }
+    } catch (e) {
+      console.error("세션 스토리지 데이터 파싱 실패:", e);
+      sessionStorage.removeItem("tempPlans");
+    }
+  }
 
-// --- AI 추천 검색 이벤트 리스너 ---
+  const dateInputWrappers = document.querySelectorAll(".date-input-wrapper");
+  dateInputWrappers.forEach((wrapper) => {
+    wrapper.addEventListener("click", () => {
+      const input = wrapper.querySelector('input[type="date"]');
+      try {
+        input.showPicker();
+      } catch (error) {
+        console.error("showPicker() is not supported in this browser.", error);
+      }
+    });
+  });
+});
+
 searchBtn.addEventListener("click", async () => {
   const likedFoodsRaw = sessionStorage.getItem("foodList");
   let preferredFoodsString = "없음";
@@ -50,7 +71,7 @@ searchBtn.addEventListener("click", async () => {
     number_of_people: parseInt(peopleCount, 10),
     sight: includeSightseeing,
   };
-  loadingIndicator.style.display = "block";
+  loadingIndicator.style.display = "flex";
   suggestWrapper.style.display = "none";
   try {
     const prompt = `
@@ -61,7 +82,7 @@ searchBtn.addEventListener("click", async () => {
             2. 'summary': 계획의 한 줄 요약
             3. 'places': 방문 장소 목록 (visit_date, visit_time, name, address, price, rating 포함)
             'sight'가 true이면 식당과 관광지를 섞고, false이면 식당 위주로 짜줘.
-            아침, 점심, 저녁 식사는 필수로 포함해주고, 아래 '선호 음식'이 있다면 식당 추천에 적극 반영해줘.
+            아침, 점심, 저녁 식사는 필수로 포함해주고, '선호 음식'이 있다면 식당 추천에 반드시 반영해줘.
             여행 정보:
             - 여행 지역: ${userData.region}
             - 시작일: ${userData.trip_start_date}
@@ -71,58 +92,17 @@ searchBtn.addEventListener("click", async () => {
             - 선호 음식: ${preferredFoodsString}
             반드시 아래 JSON 스키마 형식에 맞춰서 한국어로 답변해줘.
           `;
-    const generationConfig = {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "OBJECT",
-        properties: {
-          plans: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                plan_title: { type: "STRING" },
-                summary: { type: "STRING" },
-                places: {
-                  type: "ARRAY",
-                  items: {
-                    type: "OBJECT",
-                    properties: {
-                      visit_date: { type: "STRING" },
-                      visit_time: { type: "STRING" },
-                      name: { type: "STRING" },
-                      address: { type: "STRING" },
-                      price: { type: "NUMBER" },
-                      rating: { type: "NUMBER" },
-                    },
-                    required: [
-                      "visit_date",
-                      "visit_time",
-                      "name",
-                      "address",
-                      "price",
-                      "rating",
-                    ],
-                  },
-                },
-              },
-              required: ["plan_title", "summary", "places"],
-            },
-          },
-        },
-        required: ["plans"],
-      },
-    };
-    const payload = {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig,
-    };
-    const response = await fetch(apiUrl, {
+    const response = await fetch("/api/recommend", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ prompt: prompt }),
     });
-    if (!response.ok) throw new Error(`API 호출 실패: ${response.statusText}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || `API 호출 실패: ${response.statusText}`
+      );
+    }
     const result = await response.json();
     if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
       const aiResponse = JSON.parse(result.candidates[0].content.parts[0].text);
@@ -170,9 +150,8 @@ function displayPlans(plansToDisplay) {
 
     planTitleHeader.textContent = `계획 ${index + 1}: ${plan.plan_title}`;
     planSummaryText.textContent = plan.summary;
-    slider.innerHTML = ""; // 슬라이더 초기화
+    slider.innerHTML = "";
 
-    // '자세히 보기' 버튼에 해당 plan 전체 데이터 저장
     detailsBtn.dataset.plan = JSON.stringify(plan);
 
     const placesByDate = plan.places.reduce((acc, place) => {
@@ -261,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// '자세히 보기' 버튼에 대한 이벤트 리스너 (이벤트 위임)
 suggestWrapper.addEventListener("click", function (event) {
   if (event.target.classList.contains("details-btn")) {
     const planData = event.target.dataset.plan;

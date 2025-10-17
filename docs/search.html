@@ -3,92 +3,143 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 여행 계획 추천</title>
+    <link rel="stylesheet" href="./css/index.css" />
     <link rel="stylesheet" href="./css/search.css" />
+    <title>AI 여행 계획 추천</title>
   </head>
   <body>
-    <div class="container">
-      <header>
-        <h1>AI 여행 계획 추천</h1>
-        <p>여행 정보를 입력해주세요. AI가 맞춤 여행 계획을 추천해 드립니다.</p>
-      </header>
-      <div>
-        <label for="regionInput">여행지:</label>
-        <input id="regionInput" type="text" placeholder="어디로 떠나시나요?" />
-        <label for="tripStartDate">여행 기간:</label>
-        <input id="tripStartDate" type="date" /> ~
-        <input id="tripEndDate" type="date" />
-        <label for="peopleCountInput">인원:</label>
-        <button id="decreaseBtn">-</button>
-        <input
-          id="peopleCountInput"
-          class="people-count-input"
-          type="text"
-          value="1"
-        />
-        <button id="increaseBtn">+</button>
-        <input id="sightCheckbox" type="checkbox" />
-        <label for="sightCheckbox">식당 주변 관광명소 추천 받기</label>
-        <button id="searchBtn">추천 받기</button>
-      </div>
-      <hr />
-      <div id="loading" class="loading-indicator">
-        <p>최적의 여행 계획 3가지를 생성 중입니다...</p>
+    <div id="app-container">
+      <div class="top-nav-container">
+        <div class="top-nav">
+          <div class="logo-container">
+            <span class="logo">
+              <a href="index.html">
+                <img src="./img/index-logo.png" />
+              </a>
+            </span>
+          </div>
+          <div class="nav-box">
+            <a href="search.html" class="nav-btn">search</a>
+            <a href="schedule.html" class="nav-btn">schedule</a>
+            <a href="detail.html" class="nav-btn">detail</a>
+          </div>
+        </div>
       </div>
 
-      <div id="suggestWrapper">
-        <div class="plan-container">
-          <div class="plan-title-wrapper">
-            <h2 class="plan-title-header"></h2>
-            <button class="details-btn">자세히 보기</button>
+      <header>
+        <h1>AI 여행 계획 추천</h1>
+        <p>여행 정보를 입력하시면 AI가 맞춤형 여행 계획을 추천해 드립니다.</p>
+      </header>
+
+      <section class="form-section">
+        <div class="form-controls">
+          <div class="form-group">
+            <label for="regionInput">여행지</label>
+            <input
+              id="regionInput"
+              type="text"
+              placeholder="어디로 떠나시나요?"
+            />
           </div>
-          <div class="carousel-container">
-            <button class="arrow-btn prev-btn">&lt;</button>
-            <div class="slider-viewport">
-              <div class="slider"></div>
+
+          <div class="form-group">
+            <label>여행 기간</label>
+            <div class="date-input-container">
+              <label for="tripStartDate" class="date-input-wrapper">
+                <input id="tripStartDate" type="date" />
+              </label>
+              <span>~</span>
+              <label for="tripEndDate" class="date-input-wrapper">
+                <input id="tripEndDate" type="date" />
+              </label>
             </div>
-            <button class="arrow-btn next-btn">&gt;</button>
           </div>
-          <div class="plan-summary-footer">
-            <b>요약:</b> <span class="plan-summary-text"></span>
+
+          <div class="form-group">
+            <label for="peopleCountInput">인원</label>
+            <div class="people-count-wrapper">
+              <button id="decreaseBtn" class="count-btn">-</button>
+              <input
+                id="peopleCountInput"
+                class="people-count-input"
+                type="text"
+                value="1"
+              />
+              <button id="increaseBtn" class="count-btn">+</button>
+            </div>
+          </div>
+
+          <label class="checkbox-wrapper">
+            <input id="sightCheckbox" type="checkbox" />
+            <span>주변 관광명소 추천</span>
+          </label>
+
+          <button id="searchBtn" class="search-btn">추천 받기</button>
+        </div>
+      </section>
+
+      <main>
+        <div id="loading" class="loading-indicator">
+          <div class="spinner"></div>
+          <p>최적의 여행 계획을 생성 중입니다</p>
+        </div>
+
+        <div id="suggestWrapper">
+          <div class="plan-container">
+            <div class="plan-title-wrapper">
+              <h2 class="plan-title-header"></h2>
+              <button class="details-btn">자세히 보기</button>
+            </div>
+            <div class="carousel-container">
+              <button class="arrow-btn prev-btn">&lt;</button>
+              <div class="slider-viewport">
+                <div class="slider"></div>
+              </div>
+              <button class="arrow-btn next-btn">&gt;</button>
+            </div>
+            <div class="plan-summary-footer">
+              <b>여행 요약:</b> <span class="plan-summary-text"></span>
+            </div>
+          </div>
+          <hr class="plan-divider" />
+          <div class="plan-container">
+            <div class="plan-title-wrapper">
+              <h2 class="plan-title-header"></h2>
+              <button class="details-btn">자세히 보기</button>
+            </div>
+            <div class="carousel-container">
+              <button class="arrow-btn prev-btn">&lt;</button>
+              <div class="slider-viewport">
+                <div class="slider"></div>
+              </div>
+              <button class="arrow-btn next-btn">&gt;</button>
+            </div>
+            <div class="plan-summary-footer">
+              <b>여행 요약:</b> <span class="plan-summary-text"></span>
+            </div>
+          </div>
+          <hr class="plan-divider" />
+          <div class="plan-container">
+            <div class="plan-title-wrapper">
+              <h2 class="plan-title-header"></h2>
+              <button class="details-btn">자세히 보기</button>
+            </div>
+            <div class="carousel-container">
+              <button class="arrow-btn prev-btn">&lt;</button>
+              <div class="slider-viewport">
+                <div class="slider"></div>
+              </div>
+              <button class="arrow-btn next-btn">&gt;</button>
+            </div>
+            <div class="plan-summary-footer">
+              <b>여행 요약:</b> <span class="plan-summary-text"></span>
+            </div>
           </div>
         </div>
-        <hr class="plan-divider" />
-        <div class="plan-container">
-          <div class="plan-title-wrapper">
-            <h2 class="plan-title-header"></h2>
-            <button class="details-btn">자세히 보기</button>
-          </div>
-          <div class="carousel-container">
-            <button class="arrow-btn prev-btn">&lt;</button>
-            <div class="slider-viewport">
-              <div class="slider"></div>
-            </div>
-            <button class="arrow-btn next-btn">&gt;</button>
-          </div>
-          <div class="plan-summary-footer">
-            <b>요약:</b> <span class="plan-summary-text"></span>
-          </div>
-        </div>
-        <hr class="plan-divider" />
-        <div class="plan-container">
-          <div class="plan-title-wrapper">
-            <h2 class="plan-title-header"></h2>
-            <button class="details-btn">자세히 보기</button>
-          </div>
-          <div class="carousel-container">
-            <button class="arrow-btn prev-btn">&lt;</button>
-            <div class="slider-viewport">
-              <div class="slider"></div>
-            </div>
-            <button class="arrow-btn next-btn">&gt;</button>
-          </div>
-          <div class="plan-summary-footer">
-            <b>요약:</b> <span class="plan-summary-text"></span>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
+
     <script src="./js/search.js"></script>
+    <script src="./js/index.js"></script>
   </body>
 </html>
