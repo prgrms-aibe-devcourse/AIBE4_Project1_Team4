@@ -464,8 +464,8 @@ body {
 }
 
 .carousel-card {
-    min-width: 280px;
-    min-height: 280px;
+    max-width: 260px;
+    max-height: 280px;
     background: white;
     border: 3px solid #000000;
     flex-shrink: 0;
@@ -473,7 +473,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.2em;
-    color: #999;
+    color: #000000;
     position: relative;
 }
 
@@ -643,3 +643,122 @@ body {
     /* flex-wrap: wrap; */ 
 }
 
+/* -------------------------------------------
+ * 2. Card General Styles
+ * ------------------------------------------- */
+.carousel-card {
+    /* 카드 크기 및 기본 스타일 */
+    width: 300px; /* 고정 너비 */
+    height: 400px; /* 고정 높이 */
+    margin: 10px;
+    padding: 20px;
+    border-radius: 16px; /* 둥근 모서리 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 은은한 그림자 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+
+    /* 카드 배경: 내용의 가독성을 위해 흰색 또는 밝은 회색 사용 */
+    background-color: #ffffff;
+    color: #333333; /* 텍스트 색상 */
+
+    /* 캐러셀 레이아웃을 위한 설정 (필요시) */
+    display: inline-block;
+    vertical-align: top;
+}
+
+.carousel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-card:hover *{
+    color: #FFFFFF;
+}
+
+.main-card-content {
+    /* 내부 여백 및 레이아웃 */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 5px;
+}
+
+.card-region:hover {
+    
+}
+
+/* -------------------------------------------
+ * 3. Specific Content Styles (image_4e2621.png 기반)
+ * ------------------------------------------- */
+
+/* 여행 제목/지역 (.card-region) */
+.card-region {
+    font-size: 1.4rem; /* 큰 글꼴 */
+    font-weight: 700; /* 매우 굵게 */
+    color: var(--primary-color); /* 다크 마룬 (짙은 적갈색) - 강조 색상 */
+    line-height: 1.2;
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0; /* 제목 아래 구분선 */
+}
+
+/* 메타 정보 (.card-meta) */
+.card-meta {
+    font-size: 0.95rem; /* 작은 글꼴 */
+    color: #555555; /* 회색 */
+    line-height: 1.5;
+    margin: 0;
+    /* 아이콘과 텍스트가 같이 있을 경우를 대비하여 flex 사용을 권장 */
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 아이콘과 텍스트 간격 */
+}
+
+/* 개별 여행지 (.card-place) */
+.card-place {
+    font-size: 0.85rem; /* 더 작은 글꼴 */
+    color: #444444; /* 약간 더 진한 회색 */
+    line-height: 1.6;
+    margin-top: auto; /* 상세 내용을 카드 하단에 배치 (flex 사용 시) */
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+}
+
+/* -------------------------------------------
+ * 4. Placeholder Card Styles
+ * ------------------------------------------- */
+.placeholder-card {
+    background-color: #222222; /* 어두운 배경에 맞춘 밝은 카드 */
+    color: #f0f0f0;
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    text-align: center;
+    border: 2px dashed #999999; /* 점선 테두리 */
+}
+
+.placeholder-card:hover {
+    background-color: #333333; /* 호버 시 배경색 변경 */
+    border: 2px dashed #ff4500; /* 호버 시 강조 색상으로 변경 */
+}
+
+.placeholder-card h4 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.placeholder-card p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: #cccccc;
+}
+
+/* 아이콘 스타일링 (이미지에서 달력, 지도, 사람 모양 아이콘을 가정) */
+/* .card-meta 내부에 span 또는 i 태그로 아이콘을 사용할 경우의 예시 */
+.card-meta .icon {
+    /* 아이콘 라이브러리 (예: Font Awesome, Lucide)에 따라 조정 필요 */
+    color: #8B0000; /* 아이콘에 강조 색상 적용 */
+    min-width: 20px; /* 아이콘 영역 확보 */
+    text-align: center;
+}
