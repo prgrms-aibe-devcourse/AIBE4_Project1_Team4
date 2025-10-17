@@ -229,6 +229,41 @@ main {
   }
 }
 
+/* 로딩 오버레이 스타일 추가 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none; /* 초기에는 숨김 */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999; /* 다른 모든 요소 위에 표시 */
+  color: white;
+  text-align: center;
+}
+/* 로딩 스피너 스타일 추가 */
+.loading-spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #a91d2b; /* 테마 색상 */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* --- 4. 여행 계획 카드 스타일 --- */
 #suggestWrapper {
   display: none;
