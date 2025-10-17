@@ -163,7 +163,6 @@ searchBtn.addEventListener("click", async () => {
     console.error("Error:", error);
     alert(`여행 계획 생성 중 오류가 발생했습니다: ${error.message}`);
   }
-  loadingOverlay.style.display = "none";
 });
 
 let tempPlans = [];
@@ -330,8 +329,6 @@ async function onGoogleMapsLoaded() {
     } catch (e) {
       console.error("세션 스토리지 데이터 파싱 실패:", e);
       sessionStorage.removeItem("tempPlans");
-    } finally {
-      loadingOverlay.style.display = "none";
     }
   } else {
     loadingOverlay.style.display = "none";
@@ -574,6 +571,8 @@ async function onVerifyFinished(results, planIndex) {
   // 추가된 장소를 포함하여 최종 계획을 저장하고 화면을 다시 렌더링한다.
   sessionStorage.setItem("tempPlans", JSON.stringify(tempPlans));
   displayPlans(tempPlans);
+
+  loadingOverlay.style.display = "none";
 }
 
 // 삭제된 유효하지 않은 장소만큼 AI에게 요청한다.
