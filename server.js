@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const path = require('path');
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { GoogleGenAI } = require("@google/genai");
 
@@ -14,7 +14,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const app = express();
 const port = 3000;
 
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 app.get("/plans", async (req, res) => {
@@ -138,26 +138,31 @@ app.post("/schedule", async (req, res) => {
   }
 });
 
-app.post('/api/gemini', async (req, res) => {
+app.post("/api/gemini", async (req, res) => {
   const prompt = req.body.prompt;
   if (!prompt) {
-    return res.status(400).json({ error: '프롬프트가 필요합니다.' });
+    return res.status(400).json({ error: "프롬프트가 필요합니다." });
   }
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
-    return res.status(500).json({ error: '서버에 API 키가 설정되어 있지 않습니다.' });
+    return res
+      .status(500)
+      .json({ error: "서버에 API 키가 설정되어 있지 않습니다." });
   }
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json', temperature: 0.7 },
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.7,
+          },
         }),
       }
     );
@@ -165,22 +170,100 @@ app.post('/api/gemini', async (req, res) => {
     if (!response.ok) {
       const errorData = await response.json();
       const message = errorData.error?.message || response.statusText;
-      return res.status(response.status).json({ error: `API 요청 실패: ${message}` });
+      return res
+        .status(response.status)
+        .json({ error: `API 요청 실패: ${message}` });
     }
 
     const data = await response.json();
     res.json(data);
-
   } catch (error) {
-    console.error('Gemini API 호출 오류:', error);
-    res.status(500).json({ error: '서버 내부 오류' });
+    console.error("Gemini API 호출 오류:", error);
+    res.status(500).json({ error: "서버 내부 오류" });
   }
 });
 
-app.use(express.static(path.join(__dirname, 'docs')));
+app.post("/api/recommend", async (req, res) => {
+  const payload = req.body.payload;
+
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY || GEMINI_API_KEY.length < 10) {
+    return res
+      .status(500)
+      .json({ error: "서버에 API 키가 설정되어 있지 않습니다." });
+  }
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const message = errorData.error?.message || response.statusText;
+      return res
+        .status(response.status)
+        .json({ error: `API 요청 실패: ${message}` });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Gemini API 호출 오류:", error);
+    res.status(500).json({ error: "서버 내부 오류" });
+  }
+});
+
+app.use(express.static(path.join(__dirname, "docs")));
 // 루트 요청이 오면 index.html 보내기
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "docs", "index.html"));
+});
+
+app.get("/api/geocode", async (req, res) => {
+  const { address } = req.query;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  if (!address) {
+    return res.status(400).json({ error: "Address is required" });
+  }
+  if (!apiKey) {
+    return res
+      .status(500)
+      .json({ error: "API key is not configured on the server" });
+  }
+
+  // Google Geocoding API에 보낼 요청 URL 생성
+  const baseUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+  const params = new URLSearchParams({
+    address: address,
+    key: apiKey,
+  });
+  const url = `${baseUrl}?${params.toString()}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error_message || `HTTP error! status: ${response.status}`
+      );
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching from Google Geocoding API:", error.message);
+    res.status(500).json({ error: "Failed to fetch geocoding data" });
+  }
+});
+
+app.get("/api/key", (req, res) => {
+  res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY });
 });
 
 app.listen(port, () => {

@@ -8,6 +8,10 @@
     <title>AI 여행 계획 추천</title>
   </head>
   <body>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>AI가 최적의 여행 계획을 생성 중입니다...</p>
+    </div>
     <div id="app-container">
       <div class="top-nav-container">
         <div class="top-nav">
@@ -79,11 +83,6 @@
       </section>
 
       <main>
-        <div id="loading" class="loading-indicator">
-          <div class="spinner"></div>
-          <p>최적의 여행 계획을 생성 중입니다</p>
-        </div>
-
         <div id="suggestWrapper">
           <div class="plan-container">
             <div class="plan-title-wrapper">
