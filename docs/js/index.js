@@ -314,25 +314,18 @@ async function finishGame() {
         const recommendationResults = await getFoodRecommendation(answersLog);
         // 로딩 메시지 제거
         removeLoadingMessage();
-
+        // 세션스토리지에 파싱된 배열 저장 (foodListArray -> foodList)
         const foodListArray = recommendationResults.map((item) => item.name);
-        
-        const foodListObject = {
-            food_list: foodListArray
-        };
-        
-        sessionStorage.setItem("foodList", JSON.stringify(foodListObject));
-        
-        console.log("세션 스토리지에 저장된 객체:", foodListObject);
-        
-        // ==========================================================
+        sessionStorage.setItem("foodList", JSON.stringify(foodListArray));
+        console.log(foodListArray);
 
         // 결과 표시
         addBotMessage("분석이 완료되었습니다! 🎉");
 
         setTimeout(async () => {
             addBotMessage("당신의 취향에 맞는 음식 추천 결과입니다:");
-            await addResultCards(recommendationResults); 
+            // 💡 addResultCards가 async 함수이므로 await를 사용하여 이미지 로딩을 기다립니다.
+            await addResultCards(recommendationResults);
         }, 800);
     } catch (error) {
         console.error("API 요청 실패:", error);
