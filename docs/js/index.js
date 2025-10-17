@@ -457,7 +457,6 @@ async function fetchAndRenderDayTripPlans() {
                            : `${plan.start_date} ~ ${plan.end_date}`;
 
             cardClone.querySelector(".card-region").textContent = `${plan.region} (당일치기)`;
-            cardClone.querySelector(".card-date").textContent = dateText;
             cardClone.querySelector(".card-meta").textContent = `인원: ${plan.size}명`;
             
             // 서버에서 후처리되어 plan.places 배열로 접근 가능
