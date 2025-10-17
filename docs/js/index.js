@@ -440,28 +440,39 @@ async function fetchAndRenderDayTripPlans() {
     carouselTrack.innerHTML = "";
 
     try {
-        const response = await fetch("http://localhost:3000/plans");
+        const response = await fetch("http://localhost:3000/indexCards"); 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const allPlans = await response.json();
-        const dayTripPlans = allPlans.filter(plan => plan.is_day_trip === true);
-
+        
+        const dayTripPlans = await response.json(); 
+        
         dayTripPlans.forEach((plan) => {
-            //true를 넣어 자식 요소까지 모두 복제
             const cardClone = cardTemplate.content.cloneNode(true);
+            const cardElement = cardClone.querySelector(".carousel-card");
+            
+            // 날짜 표시: 시작일과 종료일이 같으면 하나만 표시하도록 개선
+            const dateText = plan.start_date === plan.end_date 
+                           ? plan.start_date
+                           : `${plan.start_date} ~ ${plan.end_date}`;
 
             cardClone.querySelector(".card-region").textContent = `${plan.region} (당일치기)`;
-            cardClone.querySelector(".card-date").textContent = plan.start_date;
             cardClone.querySelector(".card-meta").textContent = `인원: ${plan.size}명`;
             
-            const firstPlaceName = plan.plan_items?.[0]?.places?.name || "일정 없음";
+            // 서버에서 후처리되어 plan.places 배열로 접근 가능
+            const firstPlaceName = plan.places?.[0]?.name || "일정 없음"; 
             cardClone.querySelector(".card-place").textContent = `첫 일정: ${firstPlaceName}`;
+
+            // 클릭 시 세션 스토리지에 데이터 저장되며 schedule로 이동
+            cardElement.addEventListener('click', () => {
+                sessionStorage.setItem("plansData", JSON.stringify(plan));
+                console.log("세션 스토리지에 저장된 plansData:", plan);
+                window.location.href = 'schedule.html';
+            });
 
             carouselTrack.appendChild(cardClone);
         });
 
-        // DB에 있는 is_day_trip이 TRUE인 값이 4개가 되지 않을 경우 채우는 부분
         const placeholdersNeeded = 4 - dayTripPlans.length;
         if (placeholdersNeeded > 0) {
             for (let i = 0; i < placeholdersNeeded; i++) {
